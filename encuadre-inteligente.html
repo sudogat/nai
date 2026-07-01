@@ -560,6 +560,9 @@
         <input type="text" id="licenseKey" placeholder="License key…">
         <button id="activateBtn" style="background:#ffd700;color:#000;border:none;padding:6px 10px;border-radius:6px;font-weight:700;cursor:pointer;" data-i18n="activate">Activar</button>
       </div>
+      <div class="row">
+        <a id="buyProLink" href="#" target="_blank" rel="noopener" style="flex:1;text-align:center;background:linear-gradient(135deg,#ffd700,#ff9a00);color:#000;padding:8px;border-radius:8px;font-weight:700;text-decoration:none;font-size:12px;" data-i18n="buyPro">💎 Comprar PRO — 9,99 €</a>
+      </div>
       <div class="row" style="font-size:11px;color:#888;">
         <span data-i18n="proHint">PRO: sin marca de agua, exportación 4K, PNG/WebP, lote y compartir.</span>
       </div>
@@ -1450,6 +1453,7 @@
         noProjects:'No hay proyectos aún.', savedOk:'Guardado ✓', invalidKey:'Clave inválida',
         proRequired:'Función PRO. Activa una licencia.', noImage:'Sube una foto primero',
         shareNotSupported:'Compartir no disponible', installMsg:'Instalar como app', install:'Instalar',
+        buyPro:'💎 Comprar PRO — 9,99 €',
       },
       en: {
         flip:'Flip', grid:'Guides', undo:'Undo', redo:'Redo',
@@ -1464,6 +1468,7 @@
         noProjects:'No projects yet.', savedOk:'Saved ✓', invalidKey:'Invalid key',
         proRequired:'PRO feature. Activate a license.', noImage:'Upload a photo first',
         shareNotSupported:'Share not supported', installMsg:'Install as app', install:'Install',
+        buyPro:'💎 Buy PRO — €9.99',
       }
     };
     let currentLang = localStorage.getItem('lang') || (navigator.language.startsWith('en') ? 'en' : 'es');
@@ -1510,6 +1515,11 @@
         navigator.serviceWorker.register('service-worker.js').catch(() => {});
       });
     }
+
+    // Enlace de compra PRO (Gumroad, LemonSqueezy, etc.)
+    // Cambia esta URL cuando tengas tu producto creado.
+    const BUY_PRO_URL = 'https://gumroad.com/l/encuadre-pro';
+    document.getElementById('buyProLink').href = BUY_PRO_URL;
 
     // Atajos teclado (PC)
     window.addEventListener('keydown', (e) => {

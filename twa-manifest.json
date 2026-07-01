@@ -1,0 +1,37 @@
+{
+  "packageId": "com.encuadre.app",
+  "host": "REEMPLAZA.web.app",
+  "name": "Encuadre Inteligente Pro",
+  "launcherName": "Encuadre",
+  "display": "standalone",
+  "themeColor": "#000000",
+  "navigationColor": "#000000",
+  "backgroundColor": "#000000",
+  "enableNotifications": false,
+  "startUrl": "/encuadre-inteligente.html",
+  "iconUrl": "https://REEMPLAZA.web.app/icon-512.svg",
+  "maskableIconUrl": "https://REEMPLAZA.web.app/icon-maskable.svg",
+  "appVersionName": "1.0.0",
+  "appVersion": "1.0.0",
+  "appVersionCode": 1,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "android"
+  },
+  "webManifestUrl": "https://REEMPLAZA.web.app/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {
+    "playBilling": { "enabled": true }
+  },
+  "orientation": "portrait",
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "shareTarget": {
+    "action": "/encuadre-inteligente.html",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}
