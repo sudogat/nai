@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Encuadre Inteligente Pro</title>
+  <style>
+    :root {
+      --accent-color: #ffd700;
+      --bg-dark: #121212;
+      --panel: #000;
+      --muted: #666;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background-color: var(--bg-dark);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: white;
+      overflow: hidden;
+    }
+
+    .app-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      max-width: 480px;
+      max-height: 900px;
+      background-color: var(--panel);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (min-width: 481px) {
+      .app-container {
+        border-radius: 24px;
+        border: 4px solid #333;
+        height: 92vh;
+      }
+    }
+
+    .top-bar {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--panel);
+      z-index: 12;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    .top-bar .title { font-size: 14px; font-weight: 600; }
+    .top-bar .ratio-tag {
+      color: var(--accent-color);
+      font-weight: bold;
+      font-size: 13px;
+      padding: 4px 10px;
+      border: 1px solid var(--accent-color);
+      border-radius: 12px;
+    }
+
+    .viewport-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0a0a0a;
+      overflow: hidden;
+      padding: 8px;
+    }
+
+    .viewport {
+      position: relative;
+      background: #1a1a1a;
+      overflow: hidden;
+      touch-action: none;
+      cursor: grab;
+      max-width: 100%;
+      max-height: 100%;
+    }
+    .viewport.dragging { cursor: grabbing; }
+
+    #user-image {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: center center;
+      max-width: none;
+      max-height: none;
+      user-select: none;
+      pointer-events: none;
+      display: none;
+      -webkit-user-drag: none;
+    }
+
+    .guides-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+      transition: opacity 0.2s;
+    }
+    .guides-layer.hidden { opacity: 0; }
+
+    .focus-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 64px;
+      height: 64px;
+      border: 1px solid var(--accent-color);
+      pointer-events: none;
+      z-index: 11;
+      display: none;
+    }
+    .focus-box::after {
+      content: '☀';
+      position: absolute;
+      right: -18px;
+      top: calc(50% - 8px);
+      font-size: 11px;
+      color: var(--accent-color);
+    }
+
+    .bottom-panel {
+      background: var(--panel);
+      padding: 12px 14px 16px;
+      z-index: 12;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    .chip-row {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+    .chip-row::-webkit-scrollbar { display: none; }
+
+    .chip {
+      flex-shrink: 0;
+      background: #222;
+      color: #ccc;
+      border: 1px solid transparent;
+      padding: 6px 12px;
+      border-radius: 14px;
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .chip:hover { background: #2c2c2c; }
+    .chip.active {
+      background: rgba(255, 215, 0, 0.15);
+      color: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+
+    .controls-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      color: #bbb;
+    }
+    .controls-row label {
+      min-width: 56px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .controls-row input[type="range"] {
+      flex-grow: 1;
+      accent-color: var(--accent-color);
+      min-width: 0;
+    }
+    .controls-row .value {
+      min-width: 34px;
+      text-align: right;
+      color: #888;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .icon-row {
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+    }
+    .icon-btn {
+      flex: 1;
+      background: #1c1c1c;
+      color: #ddd;
+      border: 1px solid #2a2a2a;
+      padding: 8px 6px;
+      border-radius: 10px;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      transition: background 0.15s;
+    }
+    .icon-btn:hover:not(:disabled) { background: #262626; }
+    .icon-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .icon-btn .icon { font-size: 16px; }
+
+    .btn-container {
+      display: flex;
+      gap: 8px;
+    }
+    .btn {
+      flex: 1;
+      border: none;
+      padding: 12px 10px;
+      border-radius: 22px;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .upload-btn { background: #333; color: white; }
+    .save-btn {
+      background: var(--accent-color);
+      color: black;
+      box-shadow: 0 4px 10px rgba(255, 215, 0, 0.2);
+    }
+    .btn:disabled { background: #222; color: #555; cursor: not-allowed; box-shadow: none; }
+
+    .placeholder-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 20px;
+      width: 80%;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(255, 215, 0, 0.95);
+      color: black;
+      padding: 10px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 100;
+      transition: transform 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+
+    <div class="top-bar">
+      <span class="title">Encuadre Inteligente</span>
+      <span class="ratio-tag" id="ratioTag">4:3</span>
+    </div>
+
+    <div class="viewport-wrapper">
+      <div class="viewport" id="viewport">
+        <div class="placeholder-text" id="placeholder">Sube una foto para empezar a encuadrar</div>
+        <img id="user-image" src="" alt="Tu foto">
+        <div class="focus-box" id="focusBox"></div>
+
+        <svg class="guides-layer" id="guidesLayer" viewBox="0 0 300 300" preserveAspectRatio="none">
+          <line x1="100" y1="0" x2="100" y2="300" stroke="rgba(255,255,255,0.35)" stroke-width="1" stroke-dasharray="4"/>
+          <line x1="200" y1="0" x2="200" y2="300" stroke="rgba(255,255,255,0.35)" stroke-width="1" stroke-dasharray="4"/>
+          <line x1="0" y1="100" x2="300" y2="100" stroke="rgba(255,255,255,0.35)" stroke-width="1" stroke-dasharray="4"/>
+          <line x1="0" y1="200" x2="300" y2="200" stroke="rgba(255,255,255,0.35)" stroke-width="1" stroke-dasharray="4"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="bottom-panel">
+
+      <div class="chip-row" id="ratioChips">
+        <button class="chip" data-ratio="1:1">1:1</button>
+        <button class="chip active" data-ratio="4:3">4:3</button>
+        <button class="chip" data-ratio="3:4">3:4</button>
+        <button class="chip" data-ratio="16:9">16:9</button>
+        <button class="chip" data-ratio="9:16">9:16</button>
+        <button class="chip" data-ratio="3:2">3:2</button>
+        <button class="chip" data-ratio="2:3">2:3</button>
+      </div>
+
+      <div class="chip-row" id="filterChips">
+        <button class="chip active" data-filter="none">Original</button>
+        <button class="chip" data-filter="bw">B/N</button>
+        <button class="chip" data-filter="sepia">Sepia</button>
+        <button class="chip" data-filter="vivid">Vivo</button>
+        <button class="chip" data-filter="cold">Frío</button>
+        <button class="chip" data-filter="warm">Cálido</button>
+      </div>
+
+      <div class="controls-row">
+        <label>🔍 Zoom</label>
+        <input type="range" id="zoomSlider" min="0.2" max="5" step="0.01" value="1" disabled>
+        <span class="value" id="zoomValue">100%</span>
+      </div>
+      <div class="controls-row">
+        <label>↻ Girar</label>
+        <input type="range" id="rotateSlider" min="-180" max="180" step="1" value="0" disabled>
+        <span class="value" id="rotateValue">0°</span>
+      </div>
+      <div class="controls-row">
+        <label>☀ Brillo</label>
+        <input type="range" id="brightSlider" min="50" max="150" step="1" value="100" disabled>
+        <span class="value" id="brightValue">100%</span>
+      </div>
+      <div class="controls-row">
+        <label>◐ Contraste</label>
+        <input type="range" id="contrastSlider" min="50" max="150" step="1" value="100" disabled>
+        <span class="value" id="contrastValue">100%</span>
+      </div>
+
+      <div class="icon-row">
+        <button class="icon-btn" id="rotateLeftBtn" disabled title="Rotar 90° izquierda">
+          <span class="icon">↺</span><span>-90°</span>
+        </button>
+        <button class="icon-btn" id="rotateRightBtn" disabled title="Rotar 90° derecha">
+          <span class="icon">↻</span><span>+90°</span>
+        </button>
+        <button class="icon-btn" id="gridToggleBtn" disabled title="Mostrar/ocultar guías">
+          <span class="icon">▦</span><span>Guías</span>
+        </button>
+        <button class="icon-btn" id="resetBtn" disabled title="Restablecer">
+          <span class="icon">⟳</span><span>Reset</span>
+        </button>
+      </div>
+
+      <div class="btn-container">
+        <label class="btn upload-btn">
+          📷 SUBIR FOTO
+          <input type="file" id="fileInput" accept="image/*" style="display: none;">
+        </label>
+        <button class="btn save-btn" id="saveBtn" disabled>💾 GUARDAR</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast">Guardado ✓</div>
+  <canvas id="renderCanvas" style="display:none;"></canvas>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const fileInput = $('fileInput');
+    const userImage = $('user-image');
+    const zoomSlider = $('zoomSlider');
+    const rotateSlider = $('rotateSlider');
+    const brightSlider = $('brightSlider');
+    const contrastSlider = $('contrastSlider');
+    const zoomValue = $('zoomValue');
+    const rotateValue = $('rotateValue');
+    const brightValue = $('brightValue');
+    const contrastValue = $('contrastValue');
+    const placeholder = $('placeholder');
+    const focusBox = $('focusBox');
+    const viewport = $('viewport');
+    const viewportWrapper = document.querySelector('.viewport-wrapper');
+    const guidesLayer = $('guidesLayer');
+    const saveBtn = $('saveBtn');
+    const resetBtn = $('resetBtn');
+    const rotateLeftBtn = $('rotateLeftBtn');
+    const rotateRightBtn = $('rotateRightBtn');
+    const gridToggleBtn = $('gridToggleBtn');
+    const ratioChips = $('ratioChips');
+    const filterChips = $('filterChips');
+    const ratioTag = $('ratioTag');
+    const canvas = $('renderCanvas');
+    const toast = $('toast');
+
+    const state = {
+      translateX: 0,
+      translateY: 0,
+      scale: 1,
+      rotation: 0,
+      brightness: 100,
+      contrast: 100,
+      filter: 'none',
+      ratio: [4, 3],
+      hasImage: false,
+      renderW: 0,
+      renderH: 0,
+    };
+
+    const originalImageObj = new Image();
+
+    const FILTERS = {
+      none:  { css: 'none' },
+      bw:    { css: 'grayscale(1)' },
+      sepia: { css: 'sepia(0.8)' },
+      vivid: { css: 'saturate(1.6) contrast(1.1)' },
+      cold:  { css: 'hue-rotate(-15deg) saturate(1.2)' },
+      warm:  { css: 'hue-rotate(15deg) saturate(1.15) brightness(1.05)' },
+    };
+
+    // ---------- Viewport sizing por aspect ratio ----------
+    function resizeViewport() {
+      const [rw, rh] = state.ratio;
+      const wrap = viewportWrapper.getBoundingClientRect();
+      const availW = wrap.width - 16;
+      const availH = wrap.height - 16;
+      const targetRatio = rw / rh;
+      const availRatio = availW / availH;
+      let w, h;
+      if (availRatio > targetRatio) {
+        h = availH;
+        w = h * targetRatio;
+      } else {
+        w = availW;
+        h = w / targetRatio;
+      }
+      viewport.style.width = Math.floor(w) + 'px';
+      viewport.style.height = Math.floor(h) + 'px';
+      recomputeRenderSize();
+      applyImageTransform();
+    }
+
+    function recomputeRenderSize() {
+      if (!state.hasImage) return;
+      const viewW = viewport.clientWidth;
+      const viewH = viewport.clientHeight;
+      const imgAspect = originalImageObj.width / originalImageObj.height;
+      const viewAspect = viewW / viewH;
+      if (imgAspect > viewAspect) {
+        state.renderW = viewW;
+        state.renderH = viewW / imgAspect;
+      } else {
+        state.renderH = viewH;
+        state.renderW = viewH * imgAspect;
+      }
+      userImage.style.width = state.renderW + 'px';
+      userImage.style.height = state.renderH + 'px';
+    }
+
+    // ---------- Transform + filtros ----------
+    function applyImageTransform() {
+      userImage.style.transform =
+        `translate(-50%, -50%) ` +
+        `translate(${state.translateX}px, ${state.translateY}px) ` +
+        `rotate(${state.rotation}deg) ` +
+        `scale(${state.scale})`;
+      const f = FILTERS[state.filter].css;
+      const adj = `brightness(${state.brightness}%) contrast(${state.contrast}%)`;
+      userImage.style.filter = (f === 'none' ? '' : f + ' ') + adj;
+    }
+
+    function clampPosition() {
+      // Evita que la foto se salga completamente del visor
+      const viewW = viewport.clientWidth;
+      const viewH = viewport.clientHeight;
+      const halfW = (state.renderW * state.scale) / 2;
+      const halfH = (state.renderH * state.scale) / 2;
+      const maxX = halfW + viewW / 2 - 20;
+      const maxY = halfH + viewH / 2 - 20;
+      state.translateX = Math.max(-maxX, Math.min(maxX, state.translateX));
+      state.translateY = Math.max(-maxY, Math.min(maxY, state.translateY));
+    }
+
+    function updateLabels() {
+      zoomValue.textContent = Math.round(state.scale * 100) + '%';
+      rotateValue.textContent = state.rotation + '°';
+      brightValue.textContent = state.brightness + '%';
+      contrastValue.textContent = state.contrast + '%';
+    }
+
+    // ---------- Carga de imagen ----------
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        originalImageObj.onload = () => {
+          userImage.src = ev.target.result;
+          userImage.style.display = 'block';
+          placeholder.style.display = 'none';
+          focusBox.style.display = 'block';
+          state.hasImage = true;
+          resetTransform();
+          enableControls(true);
+          recomputeRenderSize();
+          applyImageTransform();
+        };
+        originalImageObj.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function resetTransform() {
+      state.translateX = 0;
+      state.translateY = 0;
+      state.scale = 1;
+      state.rotation = 0;
+      state.brightness = 100;
+      state.contrast = 100;
+      zoomSlider.value = 1;
+      rotateSlider.value = 0;
+      brightSlider.value = 100;
+      contrastSlider.value = 100;
+      updateLabels();
+    }
+
+    function enableControls(on) {
+      [zoomSlider, rotateSlider, brightSlider, contrastSlider,
+       saveBtn, resetBtn, rotateLeftBtn, rotateRightBtn, gridToggleBtn]
+        .forEach(el => el.disabled = !on);
+    }
+
+    // ---------- Sliders ----------
+    zoomSlider.addEventListener('input', (e) => {
+      state.scale = parseFloat(e.target.value);
+      clampPosition();
+      updateLabels();
+      applyImageTransform();
+    });
+    rotateSlider.addEventListener('input', (e) => {
+      state.rotation = parseInt(e.target.value, 10);
+      updateLabels();
+      applyImageTransform();
+    });
+    brightSlider.addEventListener('input', (e) => {
+      state.brightness = parseInt(e.target.value, 10);
+      updateLabels();
+      applyImageTransform();
+    });
+    contrastSlider.addEventListener('input', (e) => {
+      state.contrast = parseInt(e.target.value, 10);
+      updateLabels();
+      applyImageTransform();
+    });
+
+    // ---------- Botones ----------
+    resetBtn.addEventListener('click', () => {
+      if (!state.hasImage) return;
+      resetTransform();
+      applyImageTransform();
+    });
+    rotateLeftBtn.addEventListener('click', () => {
+      state.rotation = ((state.rotation - 90 + 540) % 360) - 180;
+      rotateSlider.value = state.rotation;
+      updateLabels();
+      applyImageTransform();
+    });
+    rotateRightBtn.addEventListener('click', () => {
+      state.rotation = ((state.rotation + 90 + 540) % 360) - 180;
+      rotateSlider.value = state.rotation;
+      updateLabels();
+      applyImageTransform();
+    });
+    gridToggleBtn.addEventListener('click', () => {
+      guidesLayer.classList.toggle('hidden');
+      const hidden = guidesLayer.classList.contains('hidden');
+      focusBox.style.display = hidden ? 'none' : 'block';
+    });
+
+    // ---------- Aspect ratio ----------
+    ratioChips.addEventListener('click', (e) => {
+      const chip = e.target.closest('.chip');
+      if (!chip) return;
+      ratioChips.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const [w, h] = chip.dataset.ratio.split(':').map(Number);
+      state.ratio = [w, h];
+      ratioTag.textContent = chip.dataset.ratio;
+      resizeViewport();
+    });
+
+    // ---------- Filtros ----------
+    filterChips.addEventListener('click', (e) => {
+      const chip = e.target.closest('.chip');
+      if (!chip) return;
+      filterChips.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      state.filter = chip.dataset.filter;
+      applyImageTransform();
+    });
+
+    // ---------- Drag + Pinch (unified pointer/touch) ----------
+    let dragging = false;
+    let dragStartX = 0, dragStartY = 0;
+    let baseTX = 0, baseTY = 0;
+    let pinchStartDist = 0, pinchStartScale = 1;
+
+    function distance(t1, t2) {
+      const dx = t1.clientX - t2.clientX;
+      const dy = t1.clientY - t2.clientY;
+      return Math.hypot(dx, dy);
+    }
+
+    viewport.addEventListener('touchstart', (e) => {
+      if (!state.hasImage) return;
+      if (e.touches.length === 2) {
+        dragging = false;
+        pinchStartDist = distance(e.touches[0], e.touches[1]);
+        pinchStartScale = state.scale;
+        e.preventDefault();
+      } else if (e.touches.length === 1) {
+        dragging = true;
+        viewport.classList.add('dragging');
+        dragStartX = e.touches[0].clientX;
+        dragStartY = e.touches[0].clientY;
+        baseTX = state.translateX;
+        baseTY = state.translateY;
+      }
+    }, { passive: false });
+
+    viewport.addEventListener('touchmove', (e) => {
+      if (!state.hasImage) return;
+      if (e.touches.length === 2 && pinchStartDist > 0) {
+        const d = distance(e.touches[0], e.touches[1]);
+        const factor = d / pinchStartDist;
+        state.scale = Math.max(0.2, Math.min(5, pinchStartScale * factor));
+        zoomSlider.value = state.scale;
+        clampPosition();
+        updateLabels();
+        applyImageTransform();
+        e.preventDefault();
+      } else if (dragging && e.touches.length === 1) {
+        state.translateX = baseTX + (e.touches[0].clientX - dragStartX);
+        state.translateY = baseTY + (e.touches[0].clientY - dragStartY);
+        clampPosition();
+        applyImageTransform();
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    viewport.addEventListener('touchend', () => {
+      dragging = false;
+      pinchStartDist = 0;
+      viewport.classList.remove('dragging');
+    });
+
+    // Mouse (PC)
+    viewport.addEventListener('mousedown', (e) => {
+      if (!state.hasImage) return;
+      dragging = true;
+      viewport.classList.add('dragging');
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      baseTX = state.translateX;
+      baseTY = state.translateY;
+      e.preventDefault();
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      state.translateX = baseTX + (e.clientX - dragStartX);
+      state.translateY = baseTY + (e.clientY - dragStartY);
+      clampPosition();
+      applyImageTransform();
+    });
+    window.addEventListener('mouseup', () => {
+      dragging = false;
+      viewport.classList.remove('dragging');
+    });
+
+    // Rueda del ratón = zoom
+    viewport.addEventListener('wheel', (e) => {
+      if (!state.hasImage) return;
+      e.preventDefault();
+      const delta = -e.deltaY * 0.0015;
+      state.scale = Math.max(0.2, Math.min(5, state.scale + delta));
+      zoomSlider.value = state.scale;
+      clampPosition();
+      updateLabels();
+      applyImageTransform();
+    }, { passive: false });
+
+    // Doble clic/tap = zoom rápido
+    let lastTap = 0;
+    viewport.addEventListener('dblclick', () => quickZoom());
+    viewport.addEventListener('touchend', (e) => {
+      const now = Date.now ? Date.now() : new Date().getTime();
+      if (now - lastTap < 300 && e.touches.length === 0) quickZoom();
+      lastTap = now;
+    });
+    function quickZoom() {
+      if (!state.hasImage) return;
+      state.scale = state.scale >= 2 ? 1 : 2;
+      zoomSlider.value = state.scale;
+      clampPosition();
+      updateLabels();
+      applyImageTransform();
+    }
+
+    // ---------- Guardado (canvas correcto) ----------
+    saveBtn.addEventListener('click', () => {
+      if (!state.hasImage) return;
+
+      const viewW = viewport.clientWidth;
+      const viewH = viewport.clientHeight;
+
+      // Exportamos con la proporción elegida en resolución alta
+      const targetLong = 2000;
+      const [rw, rh] = state.ratio;
+      let exportW, exportH;
+      if (rw >= rh) {
+        exportW = targetLong;
+        exportH = Math.round(targetLong * rh / rw);
+      } else {
+        exportH = targetLong;
+        exportW = Math.round(targetLong * rw / rh);
+      }
+      // Ajustamos al aspect real del visor (evita bordes negros si difiere)
+      const viewRatio = viewW / viewH;
+      const targetRatio = exportW / exportH;
+      if (Math.abs(viewRatio - targetRatio) > 0.01) {
+        exportH = Math.round(exportW / viewRatio);
+      }
+
+      canvas.width = exportW;
+      canvas.height = exportH;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, exportW, exportH);
+
+      // Filtros CSS → filtro de canvas (soporte moderno)
+      const f = FILTERS[state.filter].css;
+      const adj = `brightness(${state.brightness}%) contrast(${state.contrast}%)`;
+      ctx.filter = (f === 'none' ? '' : f + ' ') + adj;
+
+      // Escala uniforme visor → export (mismo factor en X e Y)
+      const scaleMultiplier = exportW / viewW;
+
+      ctx.save();
+      // Centro del canvas
+      ctx.translate(exportW / 2, exportH / 2);
+      // Desplazamiento hecho por el usuario, escalado
+      ctx.translate(state.translateX * scaleMultiplier, state.translateY * scaleMultiplier);
+      // Zoom
+      ctx.scale(state.scale, state.scale);
+      // Rotación
+      ctx.rotate(state.rotation * Math.PI / 180);
+
+      // Tamaño del <img> tal como lo ve el DOM, escalado al canvas
+      const drawW = state.renderW * scaleMultiplier;
+      const drawH = state.renderH * scaleMultiplier;
+      ctx.drawImage(originalImageObj, -drawW / 2, -drawH / 2, drawW, drawH);
+      ctx.restore();
+      ctx.filter = 'none';
+
+      const dataURL = canvas.toDataURL('image/jpeg', 0.92);
+      const link = document.createElement('a');
+      link.download = `encuadre-${state.ratio.join('x')}-${Date.now ? Date.now() : ''}.jpg`;
+      link.href = dataURL;
+      link.click();
+
+      showToast('Guardado ✓');
+    });
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1600);
+    }
+
+    // ---------- Init ----------
+    window.addEventListener('resize', resizeViewport);
+    // Espera al layout inicial
+    requestAnimationFrame(resizeViewport);
+  </script>
+</body>
+</html>
