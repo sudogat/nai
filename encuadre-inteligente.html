@@ -4,7 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
-  <title>Encuadre Inteligente — Cámara</title>
+  <meta name="description" content="Encuadre Inteligente: componer y guardar fotos con guías profesionales (regla de tercios, áureo, triangular…). Funciona sin conexión.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Encuadre">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta property="og:title" content="Encuadre Inteligente">
+  <meta property="og:description" content="Compón fotos como un profesional con plantillas de composición.">
+  <meta property="og:type" content="website">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="icon-192.svg">
+  <link rel="apple-touch-icon" href="icon-192.svg">
+  <title>Encuadre Inteligente Pro</title>
   <style>
     :root {
       --accent: #ffd700;
@@ -327,6 +338,102 @@
       bottom: 8px;
       z-index: 21;
     }
+
+    /* ---------- Modal / drawer ---------- */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: #141414;
+      border: 1px solid #262626;
+      border-radius: 16px;
+      max-width: 420px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 18px;
+    }
+    .modal h3 { margin: 0 0 12px; font-size: 16px; }
+    .modal h4 { margin: 14px 0 6px; font-size: 13px; color: #ffd700; }
+    .modal .row { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: 12px; }
+    .modal input[type="text"], .modal input[type="number"], .modal select {
+      flex: 1; background: #1a1a1a; color: #fff;
+      border: 1px solid #333; border-radius: 6px;
+      padding: 6px 8px; font-size: 12px;
+    }
+    .modal .close {
+      background: #ffd700; color: #000;
+      border: none; padding: 10px; border-radius: 8px;
+      width: 100%; margin-top: 14px; font-weight: 700; cursor: pointer;
+    }
+    .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ffd700, #ff9a00);
+      color: #000; font-size: 9px; font-weight: 700;
+      padding: 2px 6px; border-radius: 6px;
+      vertical-align: middle;
+    }
+    .pro-lock { position: relative; opacity: 0.55; pointer-events: none; }
+    .pro-lock::after {
+      content: '🔒 PRO'; position: absolute;
+      top: -6px; right: -6px;
+      background: #ffd700; color: #000;
+      font-size: 9px; font-weight: 700;
+      padding: 2px 5px; border-radius: 5px;
+    }
+
+    /* Watermark overlay del visor */
+    .watermark {
+      position: absolute;
+      right: 12px; bottom: 12px;
+      color: rgba(255,255,255,0.85);
+      font-size: 12px; font-weight: 700;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+      z-index: 12;
+      pointer-events: none;
+      display: none;
+    }
+    .watermark.show { display: block; }
+
+    /* Install banner */
+    .install-banner {
+      position: fixed;
+      left: 50%; bottom: 20px;
+      transform: translateX(-50%) translateY(120px);
+      background: #ffd700; color: #000;
+      padding: 10px 16px; border-radius: 22px;
+      display: flex; gap: 12px; align-items: center;
+      font-size: 12px; font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      z-index: 90;
+      transition: transform 0.3s;
+    }
+    .install-banner.show { transform: translateX(-50%) translateY(0); }
+    .install-banner button {
+      background: #000; color: #ffd700;
+      border: none; padding: 6px 12px;
+      border-radius: 14px; font-weight: 700; cursor: pointer;
+      font-size: 11px;
+    }
+    .install-banner .x {
+      background: transparent; color: #000;
+      padding: 4px 6px;
+    }
+
+    /* Undo/redo */
+    .history-row {
+      position: absolute;
+      left: 12px; bottom: 8px;
+      display: flex; gap: 6px;
+      z-index: 21;
+    }
   </style>
 </head>
 <body>
@@ -349,20 +456,28 @@
       <!-- Top bar -->
       <div class="top-bar">
         <div class="top-left">
-          <button class="icon-btn" id="flipBtn" title="Voltear foto (espejo)">⇄</button>
-          <button class="icon-btn" id="gridBtn" title="Mostrar/ocultar guías">▦</button>
+          <button class="icon-btn" id="flipBtn" data-i18n-title="flip">⇄</button>
+          <button class="icon-btn" id="gridBtn" data-i18n-title="grid">▦</button>
+          <button class="icon-btn" id="undoBtn" data-i18n-title="undo" disabled>⤺</button>
+          <button class="icon-btn" id="redoBtn" data-i18n-title="redo" disabled>⤻</button>
         </div>
-        <button class="ratio-chip" id="ratioChip" title="Cambiar relación de aspecto">4:3</button>
+        <button class="ratio-chip" id="ratioChip">4:3</button>
         <div class="top-right">
-          <button class="icon-btn" id="resetBtn" title="Restablecer" disabled>⟳</button>
+          <button class="icon-btn" id="projectsBtn" data-i18n-title="projects">📁</button>
+          <button class="icon-btn" id="settingsBtn" data-i18n-title="settings">⚙</button>
+          <button class="icon-btn" id="resetBtn" data-i18n-title="reset" disabled>⟳</button>
         </div>
       </div>
 
+      <!-- Marca de agua -->
+      <div class="watermark" id="watermark">Encuadre Inteligente</div>
+
       <!-- Rail derecho -->
       <div class="side-rail">
-        <button class="icon-btn" id="rotateLeftBtn" title="Rotar -90°" disabled>↺</button>
-        <button class="icon-btn" id="rotateRightBtn" title="Rotar +90°" disabled>↻</button>
-        <button class="icon-btn" id="favBtn" title="Marcar favorito">♡</button>
+        <button class="icon-btn" id="rotateLeftBtn" disabled>↺</button>
+        <button class="icon-btn" id="rotateRightBtn" disabled>↻</button>
+        <button class="icon-btn" id="shareBtn" data-i18n-title="share" disabled>↗</button>
+        <button class="icon-btn" id="favBtn">♡</button>
       </div>
 
       <!-- Bottom stack -->
@@ -413,15 +528,98 @@
 
         <!-- CTA -->
         <div class="cta-row">
-          <label class="cta upload">
-            📷 SUBIR FOTO
-            <input type="file" id="fileInput" accept="image/*" style="display:none;">
+          <label class="cta upload" id="uploadLabel">
+            📷 <span data-i18n="upload">SUBIR FOTO</span>
+            <input type="file" id="fileInput" accept="image/*" style="display:none;" multiple>
           </label>
-          <button class="cta save" id="saveBtn" disabled>💾 GUARDAR</button>
+          <button class="cta save" id="saveBtn" disabled>💾 <span data-i18n="save">GUARDAR</span></button>
         </div>
       </div>
 
     </div>
+  </div>
+
+  <!-- Modal ajustes / PRO / marca de agua / exportación -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal">
+      <h3 data-i18n="settingsTitle">Ajustes</h3>
+
+      <h4 data-i18n="langSection">🌐 Idioma</h4>
+      <div class="row">
+        <select id="langSelect">
+          <option value="es">Español</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+
+      <h4>💎 <span data-i18n="proSection">Suscripción PRO</span></h4>
+      <div class="row" id="proStatusRow">
+        <span id="proStatus" data-i18n="freeVersion">Versión Gratis</span>
+      </div>
+      <div class="row">
+        <input type="text" id="licenseKey" placeholder="License key…">
+        <button id="activateBtn" style="background:#ffd700;color:#000;border:none;padding:6px 10px;border-radius:6px;font-weight:700;cursor:pointer;" data-i18n="activate">Activar</button>
+      </div>
+      <div class="row" style="font-size:11px;color:#888;">
+        <span data-i18n="proHint">PRO: sin marca de agua, exportación 4K, PNG/WebP, lote y compartir.</span>
+      </div>
+
+      <h4>🖋 <span data-i18n="wmSection">Marca de agua</span></h4>
+      <div class="row">
+        <label style="display:flex;gap:6px;align-items:center;">
+          <input type="checkbox" id="wmEnabled" checked> <span data-i18n="wmShow">Mostrar</span>
+        </label>
+      </div>
+      <div class="row">
+        <input type="text" id="wmText" placeholder="Encuadre Inteligente" maxlength="40">
+      </div>
+
+      <h4>📤 <span data-i18n="exportSection">Exportación</span></h4>
+      <div class="row">
+        <label style="min-width:80px;" data-i18n="format">Formato</label>
+        <select id="exportFormat">
+          <option value="jpeg">JPG</option>
+          <option value="png" class="pro-feature">PNG (PRO)</option>
+          <option value="webp" class="pro-feature">WebP (PRO)</option>
+        </select>
+      </div>
+      <div class="row">
+        <label style="min-width:80px;" data-i18n="resolution">Resolución</label>
+        <select id="exportRes">
+          <option value="1080">HD 1080</option>
+          <option value="2200" selected>2K</option>
+          <option value="3200" class="pro-feature">3K (PRO)</option>
+          <option value="4096" class="pro-feature">4K (PRO)</option>
+        </select>
+      </div>
+      <div class="row">
+        <label style="min-width:80px;" data-i18n="quality">Calidad</label>
+        <input type="range" id="exportQuality" min="0.6" max="1" step="0.02" value="0.92" style="flex:1;">
+        <span id="exportQualityVal" style="min-width:40px;text-align:right;">92%</span>
+      </div>
+
+      <button class="close" id="closeSettings" data-i18n="close">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Modal proyectos -->
+  <div class="modal-backdrop" id="projectsModal">
+    <div class="modal">
+      <h3>📁 <span data-i18n="projectsTitle">Proyectos guardados</span></h3>
+      <div class="row" style="gap:6px;">
+        <input type="text" id="projName" placeholder="Nombre del proyecto…">
+        <button id="saveProjBtn" style="background:#ffd700;color:#000;border:none;padding:6px 10px;border-radius:6px;font-weight:700;cursor:pointer;" data-i18n="saveProj">Guardar</button>
+      </div>
+      <div id="projList" style="margin-top:12px; max-height:50vh; overflow-y:auto;"></div>
+      <button class="close" id="closeProjects" data-i18n="close">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Banner instalar -->
+  <div class="install-banner" id="installBanner">
+    <span>📱 <span data-i18n="installMsg">Instalar como app</span></span>
+    <button id="installBtn" data-i18n="install">Instalar</button>
+    <button class="x" id="installDismiss">✕</button>
   </div>
 
   <div class="toast" id="toast">Guardado ✓</div>
@@ -902,36 +1100,25 @@
     }
 
     // ---------- Guardado (recorte al aspect ratio elegido) ----------
-    saveBtn.addEventListener('click', () => {
-      if (!state.hasImage) return;
+    // ---------- Render a canvas (compartido por Guardar + Compartir) ----------
+    function renderToCanvas() {
       measureViewport();
-
       const { w: rw, h: rh } = currentRatio();
       const viewA = state.viewW / state.viewH;
       const targetA = rw / rh;
-
-      // Ventana de recorte dentro del visor, centrada
       let cropW, cropH;
-      if (targetA > viewA) {
-        cropW = state.viewW;
-        cropH = state.viewW / targetA;
-      } else {
-        cropH = state.viewH;
-        cropW = state.viewH * targetA;
-      }
+      if (targetA > viewA) { cropW = state.viewW; cropH = state.viewW / targetA; }
+      else { cropH = state.viewH; cropW = state.viewH * targetA; }
 
-      const exportLong = 2200;
+      const requestedRes = parseInt(document.getElementById('exportRes').value, 10);
+      const isPro = ProGate.isPro();
+      const cap = isPro ? 4096 : 2200;
+      const exportLong = Math.min(requestedRes, cap);
       let exportW, exportH;
-      if (rw >= rh) {
-        exportW = exportLong;
-        exportH = Math.round(exportLong * rh / rw);
-      } else {
-        exportH = exportLong;
-        exportW = Math.round(exportLong * rw / rh);
-      }
+      if (rw >= rh) { exportW = exportLong; exportH = Math.round(exportLong * rh / rw); }
+      else { exportH = exportLong; exportW = Math.round(exportLong * rw / rh); }
 
-      canvas.width = exportW;
-      canvas.height = exportH;
+      canvas.width = exportW; canvas.height = exportH;
       const ctx = canvas.getContext('2d');
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, exportW, exportH);
@@ -952,11 +1139,386 @@
       ctx.restore();
       ctx.filter = 'none';
 
+      // Marca de agua: gratis obliga, PRO opcional
+      const wmEnabled = document.getElementById('wmEnabled').checked;
+      const wmText = (document.getElementById('wmText').value || 'Encuadre Inteligente').trim();
+      if (!isPro || wmEnabled) {
+        const label = isPro ? wmText : (wmText + ' • FREE');
+        const size = Math.max(18, Math.floor(exportW * 0.022));
+        ctx.font = `700 ${size}px -apple-system, Roboto, sans-serif`;
+        ctx.textBaseline = 'bottom';
+        ctx.textAlign = 'right';
+        ctx.fillStyle = 'rgba(0,0,0,0.4)';
+        ctx.fillRect(exportW - ctx.measureText(label).width - size*1.8, exportH - size*1.9, ctx.measureText(label).width + size, size*1.5);
+        ctx.fillStyle = 'rgba(255,255,255,0.92)';
+        ctx.fillText(label, exportW - size*0.6, exportH - size*0.6);
+      }
+
+      const format = document.getElementById('exportFormat').value;
+      const quality = parseFloat(document.getElementById('exportQuality').value);
+      const useFormat = (!isPro && format !== 'jpeg') ? 'jpeg' : format;
+      return { dataURL: canvas.toDataURL('image/' + useFormat, quality), format: useFormat };
+    }
+
+    saveBtn.addEventListener('click', () => {
+      if (!state.hasImage) return;
+      const { dataURL, format } = renderToCanvas();
       const link = document.createElement('a');
-      link.download = `encuadre-${currentRatio().key.replace(':','x')}-${state.preset}.jpg`;
-      link.href = canvas.toDataURL('image/jpeg', 0.92);
+      const ext = format === 'jpeg' ? 'jpg' : format;
+      link.download = `encuadre-${currentRatio().key.replace(':','x')}-${state.preset}.${ext}`;
+      link.href = dataURL;
       link.click();
-      showToast('Guardado ✓');
+      showToast(i18n('savedOk'));
+    });
+
+    // ---------- Compartir (Web Share API con archivo) ----------
+    async function shareCurrent() {
+      if (!state.hasImage) return;
+      if (!ProGate.gateFeature('share')) return;
+      try {
+        const { dataURL, format } = renderToCanvas();
+        const res = await fetch(dataURL);
+        const blob = await res.blob();
+        const ext = format === 'jpeg' ? 'jpg' : format;
+        const file = new File([blob], `encuadre.${ext}`, { type: 'image/' + format });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: 'Mi encuadre' });
+        } else if (navigator.share) {
+          await navigator.share({ title: 'Mi encuadre', text: 'Hecho con Encuadre Inteligente' });
+        } else {
+          showToast(i18n('shareNotSupported'));
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') showToast('Error: ' + err.message);
+      }
+    }
+    document.getElementById('shareBtn').addEventListener('click', shareCurrent);
+
+    // ---------- Undo / Redo ----------
+    const History = (() => {
+      const past = [], future = [];
+      const MAX = 40;
+      let suppress = false;
+      const snap = () => ({
+        translateX: state.translateX, translateY: state.translateY,
+        scale: state.scale, rotation: state.rotation,
+        brightness: state.brightness, contrast: state.contrast,
+        filter: state.filter, mirrored: state.mirrored,
+        preset: state.preset, ratioIndex: state.ratioIndex,
+      });
+      const apply = (s) => {
+        Object.assign(state, s);
+        rotateSlider.value = state.rotation;
+        brightSlider.value = state.brightness;
+        contrastSlider.value = state.contrast;
+        filterSelect.value = state.filter;
+        ratioChip.textContent = currentRatio().key;
+        renderPresetCarousel();
+        applyPresetGuides();
+        updateLabels();
+        updateZoomActive();
+        clampPosition();
+        applyImageTransform();
+      };
+      return {
+        push() {
+          if (suppress) return;
+          past.push(snap());
+          if (past.length > MAX) past.shift();
+          future.length = 0;
+          refreshButtons();
+        },
+        undo() {
+          if (past.length < 2) return;
+          future.push(past.pop());
+          suppress = true; apply(past[past.length - 1]); suppress = false;
+          refreshButtons();
+        },
+        redo() {
+          if (!future.length) return;
+          const s = future.pop();
+          past.push(s);
+          suppress = true; apply(s); suppress = false;
+          refreshButtons();
+        },
+        reset() { past.length = 0; future.length = 0; this.push(); refreshButtons(); },
+      };
+      function refreshButtons() {
+        document.getElementById('undoBtn').disabled = past.length < 2;
+        document.getElementById('redoBtn').disabled = future.length === 0;
+      }
+    })();
+    document.getElementById('undoBtn').addEventListener('click', () => History.undo());
+    document.getElementById('redoBtn').addEventListener('click', () => History.redo());
+    // Empuja al historial al soltar sliders o cambiar zoom/rotate
+    ['change'].forEach(ev => {
+      [rotateSlider, brightSlider, contrastSlider, filterSelect].forEach(el =>
+        el.addEventListener(ev, () => History.push()));
+    });
+    window.addEventListener('mouseup', () => { if (state.hasImage) History.push(); });
+    window.addEventListener('touchend', () => { if (state.hasImage) History.push(); });
+
+    // ---------- PRO Gate ----------
+    const ProGate = (() => {
+      // Clave simple ofuscada (demo). En producción, verificación server-side.
+      const validate = (k) => {
+        if (!k) return false;
+        const norm = k.trim().toUpperCase();
+        if (norm === 'DEMO-PRO-2026') return true;
+        // Formato: ENC-XXXX-XXXX-XXXX con checksum simple
+        if (!/^ENC-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(norm)) return false;
+        let sum = 0;
+        for (const c of norm.replace(/-/g, '')) sum = (sum * 31 + c.charCodeAt(0)) >>> 0;
+        return (sum % 97) === 42;
+      };
+      return {
+        isPro: () => localStorage.getItem('proActive') === '1',
+        activate: (k) => {
+          if (validate(k)) {
+            localStorage.setItem('proActive', '1');
+            localStorage.setItem('proKey', k.trim().toUpperCase());
+            return true;
+          }
+          return false;
+        },
+        deactivate: () => { localStorage.removeItem('proActive'); localStorage.removeItem('proKey'); },
+        gateFeature(name) {
+          if (this.isPro()) return true;
+          showToast(i18n('proRequired'));
+          return false;
+        },
+      };
+    })();
+    function refreshProUI() {
+      const isPro = ProGate.isPro();
+      document.getElementById('proStatus').textContent = isPro ? '✅ PRO' : i18n('freeVersion');
+      document.querySelectorAll('.pro-feature').forEach(el => {
+        el.disabled = !isPro;
+      });
+      document.getElementById('wmText').disabled = !isPro;
+      document.getElementById('wmEnabled').disabled = !isPro;
+      updateWatermark();
+    }
+    document.getElementById('activateBtn').addEventListener('click', () => {
+      const key = document.getElementById('licenseKey').value;
+      if (ProGate.activate(key)) {
+        showToast('PRO ✓');
+        refreshProUI();
+      } else {
+        showToast(i18n('invalidKey'));
+      }
+    });
+
+    // ---------- Marca de agua overlay ----------
+    function updateWatermark() {
+      const wm = document.getElementById('watermark');
+      const text = (document.getElementById('wmText').value || 'Encuadre Inteligente').trim();
+      const isPro = ProGate.isPro();
+      const enabled = document.getElementById('wmEnabled').checked;
+      wm.textContent = isPro ? text : (text + ' • FREE');
+      wm.classList.toggle('show', state.hasImage && (!isPro || enabled));
+    }
+    document.getElementById('wmText').addEventListener('input', updateWatermark);
+    document.getElementById('wmEnabled').addEventListener('change', updateWatermark);
+
+    // ---------- Ajustes modal ----------
+    document.getElementById('settingsBtn').addEventListener('click', () => {
+      document.getElementById('settingsModal').classList.add('open');
+    });
+    document.getElementById('closeSettings').addEventListener('click', () => {
+      document.getElementById('settingsModal').classList.remove('open');
+    });
+    document.getElementById('exportQuality').addEventListener('input', (e) => {
+      document.getElementById('exportQualityVal').textContent = Math.round(e.target.value * 100) + '%';
+    });
+
+    // ---------- Proyectos (localStorage) ----------
+    const Projects = {
+      key: 'encuadreProjects',
+      list() { try { return JSON.parse(localStorage.getItem(this.key) || '[]'); } catch { return []; } },
+      save(name, image) {
+        const items = this.list();
+        items.unshift({
+          id: 'p_' + Math.floor(Math.random() * 1e9),
+          name, image,
+          state: {
+            translateX: state.translateX, translateY: state.translateY,
+            scale: state.scale, rotation: state.rotation,
+            brightness: state.brightness, contrast: state.contrast,
+            filter: state.filter, mirrored: state.mirrored,
+            preset: state.preset, ratioIndex: state.ratioIndex,
+          },
+          ts: (typeof performance !== 'undefined' ? performance.timeOrigin + performance.now() : 0),
+        });
+        // Cuota razonable: máx 12 proyectos guardados
+        while (items.length > 12) items.pop();
+        localStorage.setItem(this.key, JSON.stringify(items));
+      },
+      remove(id) {
+        localStorage.setItem(this.key, JSON.stringify(this.list().filter(p => p.id !== id)));
+      },
+      load(id) {
+        const p = this.list().find(x => x.id === id);
+        if (!p) return;
+        originalImageObj.onload = () => {
+          userImage.src = p.image;
+          userImage.style.display = 'block';
+          placeholder.style.display = 'none';
+          focusBox.style.display = 'block';
+          state.hasImage = true;
+          Object.assign(state, p.state);
+          rotateSlider.value = state.rotation;
+          brightSlider.value = state.brightness;
+          contrastSlider.value = state.contrast;
+          filterSelect.value = state.filter;
+          ratioChip.textContent = currentRatio().key;
+          renderPresetCarousel();
+          applyPresetGuides();
+          measureViewport();
+          recomputeRenderSize();
+          clampPosition();
+          applyImageTransform();
+          updateLabels();
+          updateZoomActive();
+          updateWatermark();
+          enableControls(true);
+          History.reset();
+        };
+        originalImageObj.src = p.image;
+      },
+    };
+    function renderProjects() {
+      const list = Projects.list();
+      const el = document.getElementById('projList');
+      if (!list.length) {
+        el.innerHTML = `<div style="color:#666;font-size:12px;text-align:center;padding:20px;">${i18n('noProjects')}</div>`;
+        return;
+      }
+      el.innerHTML = list.map(p => `
+        <div style="display:flex;gap:8px;align-items:center;padding:8px;border-bottom:1px solid #222;">
+          <img src="${p.image}" style="width:44px;height:44px;object-fit:cover;border-radius:6px;">
+          <div style="flex:1;min-width:0;overflow:hidden;">
+            <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(p.name)}</div>
+            <div style="font-size:10px;color:#888;">${RATIOS[p.state.ratioIndex].key} · ${p.state.preset}</div>
+          </div>
+          <button data-load="${p.id}" style="background:#ffd700;color:#000;border:none;padding:5px 8px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;">${i18n('open')}</button>
+          <button data-del="${p.id}" style="background:#333;color:#fff;border:none;padding:5px 8px;border-radius:5px;font-size:11px;cursor:pointer;">✕</button>
+        </div>
+      `).join('');
+    }
+    function escapeHtml(s) { return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+    document.getElementById('projectsBtn').addEventListener('click', () => {
+      renderProjects();
+      document.getElementById('projectsModal').classList.add('open');
+    });
+    document.getElementById('closeProjects').addEventListener('click', () => {
+      document.getElementById('projectsModal').classList.remove('open');
+    });
+    document.getElementById('projList').addEventListener('click', (e) => {
+      const load = e.target.dataset.load, del = e.target.dataset.del;
+      if (load) { Projects.load(load); document.getElementById('projectsModal').classList.remove('open'); }
+      if (del) { Projects.remove(del); renderProjects(); }
+    });
+    document.getElementById('saveProjBtn').addEventListener('click', () => {
+      if (!state.hasImage) { showToast(i18n('noImage')); return; }
+      const name = document.getElementById('projName').value.trim() || ('Proyecto ' + (Projects.list().length + 1));
+      // Guardamos una miniatura del original a 480px para no reventar localStorage
+      const thumbCanvas = document.createElement('canvas');
+      const maxSide = 480;
+      const ratio = originalImageObj.width / originalImageObj.height;
+      if (ratio > 1) { thumbCanvas.width = maxSide; thumbCanvas.height = Math.round(maxSide / ratio); }
+      else { thumbCanvas.height = maxSide; thumbCanvas.width = Math.round(maxSide * ratio); }
+      thumbCanvas.getContext('2d').drawImage(originalImageObj, 0, 0, thumbCanvas.width, thumbCanvas.height);
+      Projects.save(name, thumbCanvas.toDataURL('image/jpeg', 0.75));
+      renderProjects();
+      document.getElementById('projName').value = '';
+      showToast(i18n('savedOk'));
+    });
+
+    // ---------- i18n ----------
+    const STRINGS = {
+      es: {
+        flip:'Voltear', grid:'Guías', undo:'Deshacer', redo:'Rehacer',
+        settings:'Ajustes', reset:'Restablecer', projects:'Proyectos',
+        share:'Compartir', upload:'SUBIR FOTO', save:'GUARDAR',
+        settingsTitle:'Ajustes', langSection:'Idioma', proSection:'Suscripción PRO',
+        freeVersion:'Versión Gratis', activate:'Activar', close:'Cerrar',
+        proHint:'PRO: sin marca de agua, exportación 4K, PNG/WebP, lote y compartir.',
+        wmSection:'Marca de agua', wmShow:'Mostrar',
+        exportSection:'Exportación', format:'Formato', resolution:'Resolución', quality:'Calidad',
+        projectsTitle:'Proyectos guardados', saveProj:'Guardar', open:'Abrir',
+        noProjects:'No hay proyectos aún.', savedOk:'Guardado ✓', invalidKey:'Clave inválida',
+        proRequired:'Función PRO. Activa una licencia.', noImage:'Sube una foto primero',
+        shareNotSupported:'Compartir no disponible', installMsg:'Instalar como app', install:'Instalar',
+      },
+      en: {
+        flip:'Flip', grid:'Guides', undo:'Undo', redo:'Redo',
+        settings:'Settings', reset:'Reset', projects:'Projects',
+        share:'Share', upload:'UPLOAD PHOTO', save:'SAVE',
+        settingsTitle:'Settings', langSection:'Language', proSection:'PRO Subscription',
+        freeVersion:'Free Version', activate:'Activate', close:'Close',
+        proHint:'PRO: no watermark, 4K export, PNG/WebP, batch and share.',
+        wmSection:'Watermark', wmShow:'Show',
+        exportSection:'Export', format:'Format', resolution:'Resolution', quality:'Quality',
+        projectsTitle:'Saved projects', saveProj:'Save', open:'Open',
+        noProjects:'No projects yet.', savedOk:'Saved ✓', invalidKey:'Invalid key',
+        proRequired:'PRO feature. Activate a license.', noImage:'Upload a photo first',
+        shareNotSupported:'Share not supported', installMsg:'Install as app', install:'Install',
+      }
+    };
+    let currentLang = localStorage.getItem('lang') || (navigator.language.startsWith('en') ? 'en' : 'es');
+    function i18n(k) { return (STRINGS[currentLang] && STRINGS[currentLang][k]) || STRINGS.es[k] || k; }
+    function applyLang() {
+      document.documentElement.lang = currentLang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        el.textContent = i18n(el.dataset.i18n);
+      });
+      document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        el.title = i18n(el.dataset.i18nTitle);
+      });
+      refreshProUI();
+    }
+    document.getElementById('langSelect').addEventListener('change', (e) => {
+      currentLang = e.target.value;
+      localStorage.setItem('lang', currentLang);
+      applyLang();
+    });
+
+    // ---------- PWA: Install prompt + Service Worker ----------
+    let deferredPrompt = null;
+    const installBanner = document.getElementById('installBanner');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (localStorage.getItem('installDismissed') === '1') return;
+      setTimeout(() => installBanner.classList.add('show'), 3000);
+    });
+    document.getElementById('installBtn').addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      installBanner.classList.remove('show');
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') showToast('App instalada ✓');
+      deferredPrompt = null;
+    });
+    document.getElementById('installDismiss').addEventListener('click', () => {
+      installBanner.classList.remove('show');
+      localStorage.setItem('installDismissed', '1');
+    });
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js').catch(() => {});
+      });
+    }
+
+    // Atajos teclado (PC)
+    window.addEventListener('keydown', (e) => {
+      if (e.target.matches('input, textarea, select')) return;
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); History.undo(); }
+      else if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'Z'))) { e.preventDefault(); History.redo(); }
+      else if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveBtn.click(); }
+      else if (e.key === 'r' && state.hasImage) resetBtn.click();
+      else if (e.key === 'g') gridBtn.click();
     });
 
     function showToast(msg) {
@@ -973,6 +1535,10 @@
       ratioChip.textContent = currentRatio().key;
       gridBtn.classList.add('active');
       measureViewport();
+      document.getElementById('langSelect').value = currentLang;
+      applyLang();
+      refreshProUI();
+      History.reset();
     }
     window.addEventListener('resize', () => {
       measureViewport();
