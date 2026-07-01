@@ -1,6 +1,6 @@
 {
-  "packageId": "com.encuadre.app",
-  "host": "REEMPLAZA.web.app",
+  "packageId": "photo.lluisridao.encuadre",
+  "host": "lluisridao.photo",
   "name": "Encuadre Inteligente Pro",
   "launcherName": "Encuadre",
   "display": "standalone",
@@ -8,9 +8,9 @@
   "navigationColor": "#000000",
   "backgroundColor": "#000000",
   "enableNotifications": false,
-  "startUrl": "/encuadre-inteligente.html",
-  "iconUrl": "https://REEMPLAZA.web.app/icon-512.svg",
-  "maskableIconUrl": "https://REEMPLAZA.web.app/icon-maskable.svg",
+  "startUrl": "/herramientas/encuadre/encuadre-inteligente.html",
+  "iconUrl": "https://lluisridao.photo/herramientas/encuadre/icon-512.svg",
+  "maskableIconUrl": "https://lluisridao.photo/herramientas/encuadre/icon-maskable.svg",
   "appVersionName": "1.0.0",
   "appVersion": "1.0.0",
   "appVersionCode": 1,
@@ -18,7 +18,7 @@
     "path": "./android.keystore",
     "alias": "android"
   },
-  "webManifestUrl": "https://REEMPLAZA.web.app/manifest.webmanifest",
+  "webManifestUrl": "https://lluisridao.photo/herramientas/encuadre/manifest.webmanifest",
   "fallbackType": "customtabs",
   "features": {
     "playBilling": { "enabled": true }

@@ -3,7 +3,7 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.encuadre.app",
+      "package_name": "photo.lluisridao.encuadre",
       "sha256_cert_fingerprints": [
         "REEMPLAZA-CON-EL-SHA256-DE-TU-KEYSTORE"
       ]

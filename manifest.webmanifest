@@ -2,6 +2,7 @@
   "name": "Encuadre Inteligente Pro",
   "short_name": "Encuadre",
   "description": "Compón fotos como un profesional con plantillas de composición (tercios, áureo, triangular, comida, retrato...). Funciona sin conexión.",
+  "id": "/herramientas/encuadre/",
   "start_url": "./encuadre-inteligente.html",
   "scope": "./",
   "display": "standalone",
