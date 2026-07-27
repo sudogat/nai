@@ -8,6 +8,19 @@ let evolutionChart, regionChart;
 // Data endpoint. Absolute so /incendios (sin barra) y /incendios/ funcionan igual.
 const DATA_URL = '/incendios/data/incendios.json';
 
+// NASA FIRMS entrega acq_time como "HHMM" (p.ej. "0645"), formato que
+// new Date() no puede parsear de forma consistente. Devolvemos un Date
+// válido a partir de acq_date + acq_time.
+function parseAcq(props) {
+    const dateStr = props.acq_date || '';
+    const rawTime = String(props.acq_time || '0000').padStart(4, '0');
+    const hh = rawTime.slice(0, 2);
+    const mm = rawTime.slice(2, 4);
+    // ISO local, sin zona: el navegador lo interpreta como hora local, que
+    // es suficientemente bueno para el filtrado "últimos N días".
+    return new Date(`${dateStr}T${hh}:${mm}:00`);
+}
+
 // Map init
 function initMap() {
     map = L.map('map', {
@@ -64,7 +77,8 @@ function filterIncendios() {
 
     return allIncendios.filter(feature => {
         const props = feature.properties;
-        const date = new Date(props.acq_date + ' ' + (props.acq_time || '0000'));
+        const date = parseAcq(props);
+        if (isNaN(date)) return false;
 
         let match = date >= cutoffDate;
 
@@ -136,11 +150,11 @@ function updateStats() {
         : 0;
     document.getElementById('intensityAvg').textContent = avgIntensity + ' MW';
 
-    const today = new Date();
-    today.setDate(today.getDate() - 1);
+    const cutoff24 = new Date();
+    cutoff24.setDate(cutoff24.getDate() - 1);
     const last24 = allIncendios.filter(f => {
-        const date = new Date(f.properties.acq_date + ' ' + (f.properties.acq_time || '0000'));
-        return date >= today;
+        const date = parseAcq(f.properties);
+        return !isNaN(date) && date >= cutoff24;
     }).length;
     document.getElementById('lastDay').textContent = last24;
 }
