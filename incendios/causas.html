@@ -5,27 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#dc2626">
 
-    <title>Mapa de grandes incendios en España · antes y ahora · datosclaros.es</title>
-    <meta name="description" content="Mapa interactivo de los grandes incendios forestales de España. Compara imágenes satelitales del antes y el después de cada zona quemada, año por año. Investiga qué había y qué hay ahora.">
-    <meta name="keywords" content="mapa histórico incendios España, antes después incendio, Sentinel Hub, Google Earth, Sierra de la Culebra, Cortes de Pallás, Corine Land Cover, cambio uso suelo">
+    <title>Causas y detenciones por incendios en España · datosclaros.es</title>
+    <meta name="description" content="Por qué arde España: reparto oficial de causas, motivación de los incendios intencionados, el embudo judicial, penas del Código Penal y cómo denunciar. Datos agregados MITECO y Fiscalía.">
+    <meta name="keywords" content="causas incendios España, incendios intencionados, detenidos incendio forestal, pirómanos, artículo 352 código penal, SEPRONA, fiscalía medio ambiente, regeneración pastos">
     <meta name="author" content="Lluís Ridao">
-    <link rel="canonical" href="https://bigdata.datosclaros.es/incendios/mapa-historico.html">
+    <link rel="canonical" href="https://bigdata.datosclaros.es/incendios/causas.html">
 
     <meta property="og:type" content="article">
-    <meta property="og:title" content="Mapa de grandes incendios en España — antes y ahora">
-    <meta property="og:description" content="Compara imágenes satelitales del antes y el después de cada gran incendio forestal español.">
-    <meta property="og:url" content="https://bigdata.datosclaros.es/incendios/mapa-historico.html">
+    <meta property="og:title" content="Por qué arde España: causas, detenciones y condenas">
+    <meta property="og:description" content="El 55% son intencionados, pero la motivación mayoritaria no es la que crees.">
+    <meta property="og:url" content="https://bigdata.datosclaros.es/incendios/causas.html">
+    <meta property="og:site_name" content="datosclaros.es">
+    <meta property="og:locale" content="es_ES">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@lluisridao">
 
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23dc2626' d='M16 2c1 4-3 5-3 10 0 3 2 5 3 5s3-2 3-5c0-2-1-3-1-4 4 3 7 7 7 12 0 6-4 10-9 10s-9-4-9-10c0-6 5-11 9-18z'/%3E%3C/svg%3E">
 
-    <link rel="alternate" type="application/rss+xml" title="Incendios Espana - noticias" href="/incendios/rss.php">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="alternate" type="application/rss+xml" title="Incendios España — noticias" href="/incendios/rss.php">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
     <link rel="stylesheet" href="css/style.css?v=12">
 
     <script>
@@ -36,7 +36,6 @@
     </script>
 </head>
 <body>
-
 <header class="site-header">
     <div class="wrap">
         <a href="/incendios/" class="brand">
@@ -55,8 +54,8 @@
         <nav class="nav" id="mainNav">
             <a href="/incendios/">Tiempo real</a>
             <a href="/incendios/historico.html">Histórico</a>
-            <a href="/incendios/mapa-historico.html" aria-current="page">Antes/ahora</a>
-            <a href="/incendios/causas.html">Causas</a>
+            <a href="/incendios/mapa-historico.html">Antes/ahora</a>
+            <a href="/incendios/causas.html" aria-current="page">Causas</a>
             <a href="/incendios/rural.html">España rural</a>
             <a href="/incendios/investigar.html">Investigar</a>
             <a href="/incendios/metodologia.html">Metodología</a>
@@ -69,93 +68,90 @@
 
     <section class="hero">
         <div class="wrap">
-            <span class="eyebrow">🔍 Investigación ciudadana · Satélite</span>
-            <h1>¿Qué había antes<br><em>y qué hay ahora?</em></h1>
-            <p class="lede">Mapa de los grandes incendios forestales de España. Elige un año, haz clic en un incendio y compara <strong>imágenes satelitales</strong> de antes y después. ¿Se regeneró el bosque? ¿Se plantó de nuevo? ¿O apareció otra cosa (fábrica, parque solar, urbanización)?</p>
-            <p class="meta">Herramientas oficiales: Sentinel Hub (Copernicus), Google Earth y Corine Land Cover.</p>
+            <span class="eyebrow">⚖️ Causas · Datos oficiales agregados</span>
+            <h1>¿Por qué<br><em>arde España?</em></h1>
+            <p class="lede">Más de la mitad de los incendios son provocados. Pero la motivación mayoritaria no es la que suele contarse. Estos son los datos oficiales del MITECO y de la Fiscalía de Medio Ambiente.</p>
         </div>
     </section>
 
     <div class="wrap">
 
         <div class="disclaimer" role="note">
-            <div class="disclaimer-icon">🔎</div>
+            <div class="disclaimer-icon">⚖️</div>
             <div>
-                <strong>Investiga, no acuses.</strong>
-                Este mapa te da las <em>herramientas</em> para comparar imágenes satelitales del antes y el después de zonas quemadas. Pero un cambio en el terreno tras un incendio puede tener muchas explicaciones: regeneración natural lenta, repoblación forestal, cambio de propietario, cambios de uso legales, etc. Para hacer afirmaciones serias, contrasta con <a href="https://land.copernicus.eu/en/products/corine-land-cover" target="_blank" rel="noopener">Corine Land Cover</a> (clasificación oficial UE de uso del suelo) y con los registros catastrales.
+                <strong>Aquí no hay nombres, y es a propósito.</strong>
+                Esta página no publica identidades, iniciales ni casos individuales de personas detenidas o investigadas. Una detención <em>no</em> es una condena, rige la presunción de inocencia y los datos judiciales están especialmente protegidos por el RGPD. Todo lo que verás son <strong>agregados oficiales publicados</strong>.
             </div>
         </div>
 
-        <section class="filters" aria-label="Filtros">
-            <label class="field">
-                <span>Año del incendio</span>
-                <select id="yearFilter">
-                    <option value="">Todos</option>
-                </select>
-            </label>
-            <label class="field">
-                <span>Comunidad</span>
-                <select id="ccaaFilter">
-                    <option value="">Todas</option>
-                </select>
-            </label>
-            <label class="field">
-                <span>Tamaño mínimo (ha)</span>
-                <select id="sizeFilter">
-                    <option value="0" selected>Todos</option>
-                    <option value="5000">≥ 5.000 ha</option>
-                    <option value="10000">≥ 10.000 ha</option>
-                    <option value="20000">≥ 20.000 ha</option>
-                </select>
-            </label>
+        <section class="block">
+            <div class="block-head">
+                <h2 id="causas-titulo">Causa de los incendios</h2>
+                <p class="meta" id="causas-sub"></p>
+            </div>
+            <div class="cause-layout">
+                <div class="chart-card">
+                    <div class="chart-wrap"><canvas id="causasChart"></canvas></div>
+                </div>
+                <div class="cause-list" id="causasList"></div>
+            </div>
         </section>
 
         <section class="block">
             <div class="block-head">
-                <h2>Mapa</h2>
-                <p class="legend">
-                    <span class="dot dot-high"></span> Gran incendio (>20.000 ha)
-                    <span class="dot dot-med"></span> Grande (>10.000 ha)
-                    <span class="dot dot-low"></span> Notable
-                </p>
+                <h2 id="motiv-titulo">Motivación de los intencionados</h2>
             </div>
-            <div class="map-container">
-                <div id="histMap"></div>
+            <div class="callout callout-info" id="motiv-sub"></div>
+            <div class="bars" id="motivBars"></div>
+            <p class="chart-source" id="motiv-fuente"></p>
+        </section>
+
+        <section class="block">
+            <h2 id="judicial-titulo">El embudo judicial</h2>
+            <p class="meta" id="judicial-desc"></p>
+            <div class="funnel" id="funnel"></div>
+            <div class="callout callout-alert">
+                <strong>El cuello de botella</strong>
+                <p id="judicial-cuello"></p>
             </div>
         </section>
 
         <section class="block">
-            <h2>Fichas de los grandes incendios</h2>
-            <p class="meta">Cada tarjeta enlaza a las herramientas satelitales oficiales para comparar el antes y el después.</p>
-            <div class="fires-grid" id="firesGrid"></div>
+            <h2 id="perfiles-titulo">Perfiles</h2>
+            <p class="meta" id="perfiles-aviso"></p>
+            <div class="info-grid" id="perfilesGrid"></div>
+            <div class="callout callout-info" id="perfiles-extincion"></div>
+        </section>
+
+        <section class="block">
+            <h2 id="penas-titulo">Qué dice el Código Penal</h2>
+            <div class="law-grid" id="penasGrid"></div>
+        </section>
+
+        <section class="block" id="denunciar">
+            <h2>Cómo denunciar</h2>
+            <p class="meta">Si ves un incendio activo o a alguien provocándolo, el 112 es siempre la vía prioritaria.</p>
+            <div class="auth-links" id="denunciarLinks"></div>
         </section>
 
         <section class="block info">
-            <h2>Cómo usar este mapa</h2>
+            <h2>Cómo leer estos datos sin equivocarse</h2>
             <div class="info-grid">
                 <article class="info-card">
-                    <h3>1. Elige un incendio en el mapa o en la lista</h3>
-                    <p>Filtra por año o comunidad. Cada marcador te muestra el nombre, la superficie quemada y enlaces a herramientas de comparación.</p>
+                    <h3>«Intencionado» no significa «especulación»</h3>
+                    <p>Es el error de interpretación más común. Intencionado significa que alguien prendió fuego a propósito. En España, la motivación dominante con diferencia es <strong>quemar matorral para que rebrote pasto</strong>, una práctica ganadera tradicional que se descontrola. La especulación urbanística es marginal en la estadística.</p>
                 </article>
                 <article class="info-card">
-                    <h3>2. Compara con Sentinel Hub EO Browser</h3>
-                    <p><a href="https://apps.sentinel-hub.com/eo-browser/" target="_blank" rel="noopener">Sentinel Hub</a> tiene modo "Compare Split" — carga el mismo punto en dos fechas distintas y desliza para ver el cambio. Es la herramienta que usan investigadores y periodistas para verificar cambios de terreno.</p>
+                    <h3>Que sea marginal no significa que no exista</h3>
+                    <p>Un 2% de los intencionados sigue siendo un número real de casos, y son los más graves porque implican premeditación económica. Que la estadística los sitúe abajo no invalida investigar un caso concreto que huela mal.</p>
                 </article>
                 <article class="info-card">
-                    <h3>3. Usa Google Earth con time-slider</h3>
-                    <p><a href="https://earth.google.com/" target="_blank" rel="noopener">Google Earth</a> tiene un control temporal (icono de reloj) que te deja recorrer imágenes históricas del mismo lugar desde los años 80 hasta hoy.</p>
+                    <h3>El 16% de causa desconocida es el agujero</h3>
+                    <p>Uno de cada seis incendios nunca llega a saberse por qué empezó. Ese hueco condiciona todo lo demás: cualquier porcentaje que leas está calculado sobre los que sí se determinaron.</p>
                 </article>
                 <article class="info-card">
-                    <h3>4. Verifica con Corine Land Cover</h3>
-                    <p><a href="https://land.copernicus.eu/en/products/corine-land-cover" target="_blank" rel="noopener">Corine Land Cover</a> clasifica oficialmente todo el uso del suelo europeo cada 6 años (1990, 2000, 2006, 2012, 2018, 2024). Es la fuente definitiva para decir "aquí había bosque y ahora hay X".</p>
-                </article>
-                <article class="info-card">
-                    <h3>5. Cruza con el Catastro</h3>
-                    <p>El <a href="https://www.sedecatastro.gob.es/" target="_blank" rel="noopener">Catastro español</a> te dice qué parcela pertenece a quién y qué uso tiene actualmente. Es información pública.</p>
-                </article>
-                <article class="info-card">
-                    <h3>6. Consulta el Registro de propietarios</h3>
-                    <p>Tras la Ley de Montes 43/2003 modificada en 2015, los terrenos incendiados <strong>no pueden cambiar de uso durante 30 años</strong>. Cualquier cambio anterior debe estar aprobado por la CCAA. Verifica en el BOE autonómico.</p>
+                    <h3>Pocas condenas no significa impunidad buscada</h3>
+                    <p>Significa que probar la autoría es dificilísimo. El fuego destruye sus propias pruebas. Sin testigo directo, sin cámara o sin confesión, el caso rara vez aguanta un juicio penal.</p>
                 </article>
             </div>
         </section>
@@ -163,7 +159,6 @@
     </div>
 
 </main>
-
 <footer class="site-footer">
     <div class="wrap footer-grid">
         <div>
@@ -217,8 +212,8 @@
     <span>112</span>
 </a>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="js/mapa-historico.js?v=1"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="js/causas.js?v=1"></script>
 <script src="js/nav.js?v=1"></script>
 </body>
 </html>

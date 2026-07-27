@@ -2,19 +2,6 @@
 // Solo tema, año del footer y el generador de embed si existe en la página.
 
 (function () {
-    const btn = document.getElementById('themeToggle');
-    if (btn) {
-        btn.addEventListener('click', () => {
-            const cur = document.documentElement.getAttribute('data-theme') || 'light';
-            const next = cur === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-        });
-    }
-
-    const y = document.getElementById('year');
-    if (y) y.textContent = new Date().getFullYear();
-
     // Generador de embed
     const w = document.getElementById('embedWidth');
     const h = document.getElementById('embedHeight');

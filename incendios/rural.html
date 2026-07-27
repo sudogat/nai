@@ -22,11 +22,12 @@
 
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23dc2626' d='M16 2c1 4-3 5-3 10 0 3 2 5 3 5s3-2 3-5c0-2-1-3-1-4 4 3 7 7 7 12 0 6-4 10-9 10s-9-4-9-10c0-6 5-11 9-18z'/%3E%3C/svg%3E">
 
+    <link rel="alternate" type="application/rss+xml" title="Incendios Espana - noticias" href="/incendios/rss.php">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-    <link rel="stylesheet" href="css/style.css?v=11">
+    <link rel="stylesheet" href="css/style.css?v=12">
 
     <script>
         (function () {
@@ -43,17 +44,24 @@
             <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 2c1 4-3 5-3 10 0 3 2 5 3 5s3-2 3-5c0-2-1-3-1-4 4 3 7 7 7 12 0 6-4 10-9 10s-9-4-9-10c0-6 5-11 9-18z"/></svg>
             <span>datosclaros<i>.es</i></span>
         </a>
-        <nav class="nav">
-            <a href="/incendios/">Tiempo real</a>
-            <a href="/incendios/historico.html">Histórico</a>
-            <a href="/incendios/mapa-historico.html">Antes/ahora</a>
-            <a href="/incendios/rural.html" aria-current="page">España rural</a>
-            <a href="/incendios/metodologia.html">Metodología</a>
-            <a href="/incendios/emergencia.html">Emergencia</a>
+        <div class="header-right">
             <button id="themeToggle" class="btn-icon" aria-label="Cambiar tema" title="Cambiar tema">
                 <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/></svg>
                 <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
             </button>
+            <button id="navToggle" class="nav-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mainNav">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <nav class="nav" id="mainNav">
+            <a href="/incendios/">Tiempo real</a>
+            <a href="/incendios/historico.html">Histórico</a>
+            <a href="/incendios/mapa-historico.html">Antes/ahora</a>
+            <a href="/incendios/causas.html">Causas</a>
+            <a href="/incendios/rural.html" aria-current="page">España rural</a>
+            <a href="/incendios/investigar.html">Investigar</a>
+            <a href="/incendios/metodologia.html">Metodología</a>
+            <a href="/incendios/emergencia.html">Emergencia</a>
         </nav>
     </div>
 </header>
@@ -194,7 +202,8 @@
                 <svg width="20" height="20" viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 2c1 4-3 5-3 10 0 3 2 5 3 5s3-2 3-5c0-2-1-3-1-4 4 3 7 7 7 12 0 6-4 10-9 10s-9-4-9-10c0-6 5-11 9-18z"/></svg>
                 <span>datosclaros<i>.es</i></span>
             </div>
-            <p class="disclaimer-text">Datos públicos accesibles. Información indicativa, no operativa. Para emergencias, 112.</p>
+            <p class="disclaimer-text">Datos públicos accesibles. Información indicativa, no operativa. Para emergencias, marca 112.</p>
+            <p class="disclaimer-text"><a href="/incendios/rss.php">📡 RSS de noticias</a> · <a href="/incendios/rss.php?tipo=focos">RSS de focos</a></p>
         </div>
         <div>
             <strong>Secciones</strong>
@@ -202,22 +211,27 @@
                 <li><a href="/incendios/">Tiempo real</a></li>
                 <li><a href="/incendios/historico.html">Histórico 1980-hoy</a></li>
                 <li><a href="/incendios/mapa-historico.html">Antes / ahora</a></li>
+                <li><a href="/incendios/causas.html">Causas y detenciones</a></li>
                 <li><a href="/incendios/rural.html">España rural</a></li>
-                <li><a href="/incendios/metodologia.html">Metodología y FAQ</a></li>
-                <li><a href="/incendios/emergencia.html">Qué hacer</a></li>
+                <li><a href="/incendios/investigar.html">Investigar</a></li>
             </ul>
         </div>
         <div>
-            <strong>Ecosistema</strong>
+            <strong>Datos y fuentes</strong>
+            <ul>
+                <li><a href="/incendios/metodologia.html">Metodología y FAQ</a></li>
+                <li><a href="/incendios/metodologia.html#api">API abierta</a></li>
+                <li><a href="https://firms.modaps.eosdis.nasa.gov/" target="_blank" rel="noopener">NASA FIRMS</a></li>
+                <li><a href="https://effis.jrc.ec.europa.eu/" target="_blank" rel="noopener">EFFIS · Copernicus</a></li>
+                <li><a href="https://www.miteco.gob.es/es/biodiversidad/temas/incendios-forestales/estadisticas.html" target="_blank" rel="noopener">MITECO / EGIF</a></li>
+            </ul>
+        </div>
+        <div>
+            <strong>Ecosistema y redes</strong>
             <ul>
                 <li><a href="https://lluisridao.com" target="_blank" rel="noopener">lluisridao.com</a></li>
                 <li><a href="https://ridanet.com" target="_blank" rel="noopener">ridanet.com</a></li>
                 <li><a href="https://datosclaros.es">datosclaros.es</a></li>
-            </ul>
-        </div>
-        <div>
-            <strong>Redes</strong>
-            <ul>
                 <li><a href="https://instagram.com/lluisridao" target="_blank" rel="noopener">Instagram</a></li>
                 <li><a href="https://x.com/lluisridao" target="_blank" rel="noopener">X</a></li>
                 <li><a href="https://facebook.com/lluisridao" target="_blank" rel="noopener">Facebook</a></li>
@@ -225,7 +239,7 @@
         </div>
     </div>
     <div class="wrap footer-bottom">
-        <span>© <span id="year"></span> datosclaros.es · Creado por <a href="https://lluisridao.com">Lluís Ridao</a></span>
+        <span>&copy; <span id="year"></span> datosclaros.es &middot; Creado por <a href="https://lluisridao.com">Llu&iacute;s Ridao</a></span>
     </div>
 </footer>
 
@@ -236,5 +250,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="js/rural.js?v=1"></script>
+<script src="js/nav.js?v=1"></script>
 </body>
 </html>

@@ -139,19 +139,8 @@ function setupExport() {
     });
 }
 
-function setupTheme() {
-    const btn = document.getElementById('themeToggle');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-        const cur = document.documentElement.getAttribute('data-theme') || 'light';
-        const next = cur === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-    });
-}
 
 document.getElementById('year').textContent = new Date().getFullYear();
-setupTheme();
 setupExport();
 loadHist().catch(e => {
     document.getElementById('histBody').innerHTML = '<tr><td colspan="4" style="color:#dc2626;padding:24px;">Error cargando datos: ' + e.message + '</td></tr>';

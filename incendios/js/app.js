@@ -472,21 +472,6 @@ document.getElementById('daysFilter').addEventListener('change', refreshAll);
 const confFilter = document.getElementById('confidenceFilter');
 if (confFilter) confFilter.addEventListener('change', refreshAll);
 
-// Theme toggle (persistente en localStorage)
-function setupTheme() {
-    const btn = document.getElementById('themeToggle');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-        const cur = document.documentElement.getAttribute('data-theme') || 'light';
-        const next = cur === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-        // Actualizar colores de tooltip de Chart.js (mantener oscuro sobre claro y viceversa)
-        if (evolutionChart) evolutionChart.update();
-        if (regionChart) regionChart.update();
-    });
-}
-
 // Share (Web Share API con fallback a copiar al portapapeles)
 function setupShare() {
     const btn = document.getElementById('shareBtn');
@@ -526,7 +511,6 @@ function clearAlerts() {
 }
 
 window.addEventListener('load', () => {
-    setupTheme();
     setupShare();
     setupExport();
     setupYear();

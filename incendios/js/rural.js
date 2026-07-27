@@ -154,19 +154,8 @@ async function renderCasos() {
     }
 }
 
-function setupTheme() {
-    const btn = document.getElementById('themeToggle');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-        const cur = document.documentElement.getAttribute('data-theme') || 'light';
-        const next = cur === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-    });
-}
 
 async function init() {
-    setupTheme();
     document.getElementById('year').textContent = new Date().getFullYear();
 
     const res = await fetch(RURAL_URL + '?t=' + Date.now(), { cache: 'no-store' });

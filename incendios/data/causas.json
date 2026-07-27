@@ -1,0 +1,87 @@
+{
+  "nota": "Datos agregados de causalidad de incendios forestales en España. Cifras aproximadas de la Estadística General de Incendios Forestales (EGIF) del MITECO y de las memorias de la Fiscalía de Sala de Medio Ambiente. Verifica en la fuente antes de citar.",
+  "aviso_legal": "Esta página NO publica nombres, iniciales ni casos individuales de personas detenidas o investigadas. Una detención no es una condena y rige la presunción de inocencia. Los datos judiciales son categoría especial protegida por el RGPD. Solo se publican agregados oficiales.",
+
+  "fuentes": [
+    { "nombre": "MITECO — Estadística General de Incendios Forestales (EGIF)", "url": "https://www.miteco.gob.es/es/biodiversidad/temas/incendios-forestales/estadisticas.html" },
+    { "nombre": "Fiscalía General del Estado — Memoria anual (sección Medio Ambiente)", "url": "https://www.fiscal.es/memorias" },
+    { "nombre": "Guardia Civil — SEPRONA", "url": "https://www.guardiacivil.es/es/institucional/especialidades/Servicio_Proteccion_Naturaleza/" },
+    { "nombre": "Código Penal, arts. 351-358 (delitos de incendio)", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-25444" }
+  ],
+
+  "causas": {
+    "titulo": "Causa de los incendios forestales en España",
+    "subtitulo": "Reparto medio del número de siniestros de la última década",
+    "unidad": "% de siniestros",
+    "fuente": "MITECO / EGIF",
+    "datos": [
+      { "causa": "Intencionado", "pct": 55, "color": "#dc2626", "detalle": "Fuego provocado deliberadamente. La motivación mayoritaria no es urbanística, sino agrícola y ganadera (ver desglose)." },
+      { "causa": "Negligencia o accidente", "pct": 23, "color": "#f59e0b", "detalle": "Quemas agrícolas descontroladas, hogueras, maquinaria, líneas eléctricas, ferrocarril, colillas." },
+      { "causa": "Desconocida", "pct": 16, "color": "#94a3b8", "detalle": "No se llega a determinar el origen. Es el gran agujero de la estadística española." },
+      { "causa": "Rayo", "pct": 4, "color": "#2563eb", "detalle": "Única causa natural. Concentrada en tormentas secas de verano en zonas de montaña." },
+      { "causa": "Reproducción", "pct": 2, "color": "#7c3aed", "detalle": "Reactivación de un incendio anterior que se daba por extinguido." }
+    ]
+  },
+
+  "motivaciones": {
+    "titulo": "Motivación cuando el incendio es intencionado",
+    "subtitulo": "Este es el dato que más sorprende: la especulación urbanística es marginal en la estadística oficial",
+    "unidad": "% de los incendios intencionados",
+    "fuente": "MITECO / EGIF — clasificación de motivaciones",
+    "datos": [
+      { "motivo": "Regeneración de pastos para ganado", "pct": 38, "detalle": "Quemar matorral para que rebrote hierba. Es, con diferencia, la primera motivación en España." },
+      { "motivo": "Quema agrícola de residuos y matorral", "pct": 17, "detalle": "Eliminar restos de poda o desbrozar por la vía rápida, a menudo fuera de la ventana autorizada." },
+      { "motivo": "Vandalismo y piromanía", "pct": 12, "detalle": "Incluye tanto el gamberrismo como la piromanía clínica, que es un trastorno raro y minoritario." },
+      { "motivo": "Ahuyentar o favorecer fauna", "pct": 9, "detalle": "Alejar animales de cultivos, o mejorar el hábitat de caza." },
+      { "motivo": "Venganzas y conflictos personales", "pct": 8, "detalle": "Disputas vecinales, por lindes, por aprovechamientos o con la administración." },
+      { "motivo": "Conflictos por gestión forestal o cinegética", "pct": 6, "detalle": "Desacuerdos por cotos, deslindes, expropiaciones o restricciones de uso." },
+      { "motivo": "Otras y no especificadas", "pct": 8, "detalle": "Cajón de sastre de la clasificación oficial." },
+      { "motivo": "Especulación urbanística o cambio de uso", "pct": 2, "detalle": "Existe y está tipificado, pero en la estadística oficial es una fracción muy pequeña. Que sea minoritario no lo hace inexistente: cada caso concreto merece investigación." }
+    ]
+  },
+
+  "judicial": {
+    "titulo": "El embudo judicial",
+    "descripcion": "De cada 100 incendios, solo una fracción mínima acaba en condena. Este es el problema real que denuncian año tras año la Fiscalía de Medio Ambiente y los agentes forestales.",
+    "pasos": [
+      { "etapa": "Incendios registrados al año", "valor": "10.000-15.000", "nota": "Media reciente de siniestros, contando conatos de menos de 1 ha." },
+      { "etapa": "Investigados con causa determinada", "valor": "~84%", "nota": "El resto queda como causa desconocida." },
+      { "etapa": "Diligencias abiertas por la Fiscalía", "valor": "cientos", "nota": "Solo una parte de los intencionados llega a la vía penal." },
+      { "etapa": "Detenidos o investigados", "valor": "decenas al año", "nota": "Cifra que varía mucho según la campaña y la comunidad." },
+      { "etapa": "Sentencias condenatorias firmes", "valor": "muy pocas", "nota": "La dificultad probatoria es enorme: el fuego destruye sus propias pruebas." }
+    ],
+    "cuello_de_botella": "El problema no es que falte ley, es que probar la autoría de un incendio forestal es extraordinariamente difícil. Sin testigo directo o confesión, la investigación depende de peritaje de campo sobre un escenario que el propio fuego ha borrado."
+  },
+
+  "penas": {
+    "titulo": "Qué dice el Código Penal",
+    "articulos": [
+      { "art": "Art. 352", "texto": "Incendiar montes o masas forestales: prisión de 1 a 5 años y multa. Si hay peligro para la vida o integridad de las personas, se aplica además la pena del delito de incendio con riesgo para las personas.", "pena": "1-5 años" },
+      { "art": "Art. 353", "texto": "Tipo agravado: cuando afecta a superficie considerable, altera gravemente las condiciones ecológicas, se actúa para obtener beneficio económico, o afecta a espacios protegidos.", "pena": "3-5 años" },
+      { "art": "Art. 354", "texto": "Prender fuego a montes con intención de incendiarlos, aunque no llegue a propagarse.", "pena": "6 meses-1 año" },
+      { "art": "Art. 355", "texto": "Los jueces pueden acordar que la calificación del suelo quemado no se modifique durante el plazo que se determine (concordante con los 30 años de la Ley de Montes).", "pena": "Limitación de uso" },
+      { "art": "Art. 358", "texto": "Incendio por imprudencia grave. Es la vía por la que entran la mayoría de las negligencias que acaban en gran incendio.", "pena": "Pena inferior en grado" }
+    ]
+  },
+
+  "perfiles": {
+    "titulo": "Qué se sabe del perfil de quien provoca incendios",
+    "aviso": "Perfiles criminológicos agregados publicados en estudios oficiales y académicos. No describen a ninguna persona concreta ni permiten señalar a nadie.",
+    "items": [
+      { "perfil": "Ganadero o agricultor local", "descripcion": "El grupo más numeroso en la estadística de intencionados. Suele actuar por regeneración de pastos o por quema agrícola, con frecuencia sin conciencia de estar cometiendo un delito grave, y en zonas que conoce bien." },
+      { "perfil": "Vecino en conflicto", "descripcion": "Actúa por venganza o disputa concreta: lindes, aprovechamientos, coto de caza, un expediente administrativo. Suele ser un fuego único y localizado." },
+      { "perfil": "Pirómano clínico", "descripcion": "Trastorno psiquiátrico reconocido, poco frecuente pero muy mediático. Se caracteriza por reincidencia, patrón repetitivo de horarios y zonas, y ausencia de motivación económica." },
+      { "perfil": "Vandalismo ocasional", "descripcion": "Sin motivación estructurada, a menudo asociado a menores o a consumo de alcohol. Predomina en zonas periurbanas." },
+      { "perfil": "Interés económico directo", "descripcion": "El más grave y el más difícil de probar. Incluye tanto el interés en el aprovechamiento de la madera quemada o en los propios trabajos de extinción, como el cambio de uso del suelo. Es minoritario en la estadística oficial." }
+    ],
+    "sobre_personal_de_extincion": "Se han documentado casos aislados de personas vinculadas a operativos de extinción condenadas por provocar incendios, y cada uno ha tenido gran repercusión mediática. Son excepciones estadísticas, no un patrón: la inmensa mayoría de bomberos forestales, agentes medioambientales y brigadistas se juegan la vida apagando fuegos. Confundir el caso aislado con la norma es injusto con un colectivo que pone muertos casi cada campaña."
+  },
+
+  "como_denunciar": [
+    { "via": "112", "detalle": "Si el incendio está activo o ves a alguien provocándolo. Es la vía prioritaria y urgente." },
+    { "via": "062 — Guardia Civil", "detalle": "Para denunciar indicios o comportamientos sospechosos que no sean una emergencia en curso." },
+    { "via": "SEPRONA", "detalle": "Servicio de Protección de la Naturaleza de la Guardia Civil, especializado en delitos ambientales.", "url": "https://www.guardiacivil.es/es/institucional/especialidades/Servicio_Proteccion_Naturaleza/" },
+    { "via": "Agentes forestales o medioambientales", "detalle": "Cada comunidad autónoma tiene su cuerpo. Son los que levantan el acta de investigación de causas sobre el terreno." },
+    { "via": "Fiscalía de Medio Ambiente", "detalle": "Para denuncias documentadas sobre presuntos delitos ambientales, incluidos cambios de uso irregulares en terreno quemado.", "url": "https://www.fiscal.es/" }
+  ]
+}

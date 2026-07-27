@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-# Scripts internos, no indexar
+# Scripts internos de cron, no indexar
 Disallow: /incendios/fetch_firms.php
 Disallow: /incendios/fetch_news.php
 Disallow: /incendios/check.php
