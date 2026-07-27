@@ -359,6 +359,88 @@ function refreshAll() {
     updateCharts();
     renderTopFires();
     renderAuthority();
+    renderRanking();
+}
+
+// ---------- Ranking de comunidades ----------
+function renderRanking() {
+    const tbody = document.getElementById('rankingBody');
+    if (!tbody) return;
+    const filtered = filterIncendios();
+    if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty">Sin detecciones en el rango elegido.</td></tr>';
+        return;
+    }
+
+    const cutoff24 = new Date();
+    cutoff24.setDate(cutoff24.getDate() - 1);
+
+    const grouped = {};
+    filtered.forEach(f => {
+        const r = f.properties.region || 'Otra';
+        if (!grouped[r]) grouped[r] = { count: 0, frpSum: 0, last24: 0 };
+        grouped[r].count++;
+        grouped[r].frpSum += (f.properties.frp || 0);
+        const d = parseAcq(f.properties);
+        if (!isNaN(d) && d >= cutoff24) grouped[r].last24++;
+    });
+
+    const total = filtered.length;
+    const rows = Object.entries(grouped)
+        .map(([region, s]) => ({ region, ...s, pct: (s.count / total * 100), frpAvg: s.frpSum / s.count }))
+        .sort((a, b) => b.count - a.count);
+
+    const maxPct = rows[0]?.pct || 1;
+
+    tbody.innerHTML = rows.map((r, i) => {
+        const rankClass = i < 3 ? `rank-${i+1}` : '';
+        const barWidth = Math.max(4, (r.pct / maxPct) * 100);
+        return `
+            <tr>
+                <td><span class="rank-num ${rankClass}">${i + 1}</span></td>
+                <td><strong>${escapeHtml(r.region)}</strong></td>
+                <td>${r.count.toLocaleString('es-ES')}</td>
+                <td>
+                    <span class="rank-bar" style="width:${barWidth}px"></span>
+                    ${r.pct.toFixed(1)}%
+                </td>
+                <td>${r.frpAvg.toFixed(1)}</td>
+                <td>${r.last24.toLocaleString('es-ES')}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// ---------- Generador de embed ----------
+function setupEmbed() {
+    const w = document.getElementById('embedWidth');
+    const h = document.getElementById('embedHeight');
+    const code = document.getElementById('embedCode');
+    const btn = document.getElementById('copyEmbedBtn');
+    if (!w || !h || !code || !btn) return;
+
+    function render() {
+        const width = w.value;
+        const height = h.value;
+        const widthAttr = width === '100%' ? '100%' : (width + 'px');
+        const url = 'https://bigdata.datosclaros.es/incendios/';
+        code.value = `<iframe src="${url}" width="${widthAttr}" height="${height}" style="border:0;border-radius:12px;" title="Incendios forestales España — datosclaros.es" loading="lazy"></iframe>`;
+    }
+    render();
+    w.addEventListener('change', render);
+    h.addEventListener('change', render);
+
+    btn.addEventListener('click', async () => {
+        code.select();
+        try {
+            await navigator.clipboard.writeText(code.value);
+            const orig = btn.textContent;
+            btn.textContent = '✓ Copiado';
+            setTimeout(() => { btn.textContent = orig; }, 1500);
+        } catch (e) {
+            document.execCommand('copy');
+        }
+    });
 }
 
 // ---------- Top 10 focos más intensos ----------
@@ -530,6 +612,7 @@ window.addEventListener('load', () => {
     setupTheme();
     setupShare();
     setupExport();
+    setupEmbed();
     setupYear();
     initMap();
     loadIncendios();

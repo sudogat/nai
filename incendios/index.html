@@ -60,7 +60,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-    <link rel="stylesheet" href="css/style.css?v=9">
+    <link rel="stylesheet" href="css/style.css?v=10">
 
     <script>
         // Anti-flicker: default siempre CLARO. Solo aplica oscuro si el
@@ -259,6 +259,99 @@
             </div>
         </section>
 
+        <section class="block emergency" id="que-hacer">
+            <h2>Si hay un incendio cerca, ¿qué hago?</h2>
+            <p class="meta">Guía básica según Protección Civil. Ante cualquier duda, marca <strong>112</strong>.</p>
+
+            <div class="steps">
+                <article class="step">
+                    <div class="step-num">1</div>
+                    <h3>Aléjate en la dirección opuesta al viento</h3>
+                    <p>El fuego avanza con el viento. Sitúate en cotas más bajas y con menos vegetación. Nunca subas por una ladera si el fuego viene por debajo.</p>
+                </article>
+                <article class="step">
+                    <div class="step-num">2</div>
+                    <h3>Llama al 112 con datos concretos</h3>
+                    <p>Ubicación exacta (municipio, punto kilométrico, coordenadas si puedes), tamaño aproximado y dirección de propagación. No cuelgues hasta que te lo indiquen.</p>
+                </article>
+                <article class="step">
+                    <div class="step-num">3</div>
+                    <h3>Confina o evacúa según indiquen</h3>
+                    <p>Si te dicen quedarte en casa: cierra puertas, ventanas y ventilación. Retira cortinas. Si te dicen evacuar: hazlo por rutas oficiales, no atajos por monte.</p>
+                </article>
+                <article class="step">
+                    <div class="step-num">4</div>
+                    <h3>Protégete respiratoriamente</h3>
+                    <p>Cubre boca y nariz con un paño húmedo. Respira agachado, el aire limpio está cerca del suelo. Evita cualquier esfuerzo innecesario.</p>
+                </article>
+                <article class="step">
+                    <div class="step-num">5</div>
+                    <h3>No intentes apagarlo tú</h3>
+                    <p>Sin equipo profesional el riesgo es letal. La extinción es cosa de INFOCA, JCyL, Bombers, BRIF y UME. Tu papel es alertar y ponerte a salvo.</p>
+                </article>
+            </div>
+
+            <div class="prevention">
+                <h3>Prevención</h3>
+                <ul>
+                    <li>No enciendas fuego en el monte ni durante las restricciones estivales (junio-octubre).</li>
+                    <li>No tires colillas por la ventanilla del coche.</li>
+                    <li>No abandones basura o cristales — actúan como lupa con el sol.</li>
+                    <li>Si vives en interfaz urbano-forestal, mantén 30 m de franja limpia alrededor.</li>
+                    <li>Denuncia comportamientos de riesgo al SEPRONA de la Guardia Civil.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="block" id="ranking">
+            <div class="block-head">
+                <h2>Ranking de comunidades</h2>
+                <p class="meta">Detecciones satelitales en el rango elegido, ordenadas por total.</p>
+            </div>
+            <div class="table-wrap">
+                <table id="rankingTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Comunidad</th>
+                            <th>Detecciones</th>
+                            <th>% del total</th>
+                            <th>FRP medio (MW)</th>
+                            <th>Últimas 24 h</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rankingBody"><tr><td colspan="6" class="empty">Cargando…</td></tr></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="block" id="embed">
+            <div class="block-head">
+                <h2>Embebe este mapa en tu web</h2>
+                <p class="meta">Copia y pega este código donde quieras mostrar el mapa. Es un iframe responsive, sin cookies ni tracking.</p>
+            </div>
+            <div class="embed-panel">
+                <label>
+                    <span>Ancho</span>
+                    <select id="embedWidth">
+                        <option value="100%" selected>100% (responsive)</option>
+                        <option value="800">800 px</option>
+                        <option value="600">600 px</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Alto</span>
+                    <select id="embedHeight">
+                        <option value="500">500 px</option>
+                        <option value="600" selected>600 px</option>
+                        <option value="800">800 px</option>
+                    </select>
+                </label>
+                <textarea id="embedCode" readonly rows="3" aria-label="Código de embed"></textarea>
+                <button id="copyEmbedBtn" class="btn btn-primary btn-sm">Copiar código</button>
+            </div>
+        </section>
+
         <section class="block info" id="sobre-datos">
             <h2>Sobre los datos y la metodología</h2>
 
@@ -296,6 +389,92 @@
                     <h3>Uso responsable</h3>
                     <p>Esta web es <strong>informativa</strong>, no operativa. Para decisiones de emergencia consulta siempre las autoridades: <a href="https://www.juntadeandalucia.es/medioambiente/portal/areas-tematicas/incendios-forestales" target="_blank" rel="noopener">INFOCA</a> (Andalucía), <a href="https://patrimonionatural.org/servicio-de-prevencion-y-extincion-de-incendios" target="_blank" rel="noopener">JCyL</a>, <a href="https://interior.gencat.cat/ca/arees_dactuacio/bombers" target="_blank" rel="noopener">Bombers de la Generalitat</a>, <a href="https://www.proteccioncivil.es/" target="_blank" rel="noopener">Protección Civil</a>, o el <strong>112</strong>.</p>
                 </article>
+            </div>
+        </section>
+
+        <section class="block" id="faq">
+            <h2>Preguntas frecuentes</h2>
+            <div class="faq">
+                <details>
+                    <summary>¿Estos datos son oficiales?</summary>
+                    <p>Los datos brutos son <strong>oficiales</strong> — vienen de NASA FIRMS, un servicio público de la NASA. Pero <em>no</em> son las cifras oficiales de hectáreas quemadas del Ministerio, que las publica el EGIF a partir de partes de las CCAA con semanas de retraso.</p>
+                </details>
+                <details>
+                    <summary>¿Cada punto es un incendio?</summary>
+                    <p>No. Cada punto es un <strong>píxel de satélite</strong> que ha detectado calor en un momento concreto. Un incendio grande genera decenas o cientos de detecciones a lo largo del día conforme pasan los satélites y el fuego avanza.</p>
+                </details>
+                <details>
+                    <summary>¿Con cuánto retraso llegan los datos?</summary>
+                    <p>Entre <strong>3 y 6 horas</strong> desde el paso del satélite. NASA procesa la imagen, detecta anomalías térmicas y publica el CSV. Nuestro servidor lo descarga cada 6 h.</p>
+                </details>
+                <details>
+                    <summary>¿Puede haber falsos positivos?</summary>
+                    <p>Sí. Fábricas, hornos, quemas agrícolas controladas, volcanes, incluso reflejos solares pueden dispararse. Por eso el sistema clasifica cada detección con nivel de <em>confianza</em> (alta / media / baja). Filtrar por confianza alta reduce mucho los falsos positivos.</p>
+                </details>
+                <details>
+                    <summary>¿Por qué no aparecen incendios pequeños?</summary>
+                    <p>El píxel más pequeño que ven VIIRS es ~375 m. Un incendio incipiente en un chalé o un contenedor de basura no se detecta. Este mapa es para fuegos <strong>al aire libre y con superficie significativa</strong>.</p>
+                </details>
+                <details>
+                    <summary>¿Cómo estiman las hectáreas?</summary>
+                    <p>Es una <strong>aproximación muy grosera</strong>: sumamos la potencia radiativa (FRP en MW) de todas las detecciones filtradas y aplicamos un factor de conversión estándar (~0,3 ha/MW). No es superficie quemada real, sirve solo para orden de magnitud.</p>
+                </details>
+                <details>
+                    <summary>¿Puedo usar estos datos para mi web / TFG / artículo?</summary>
+                    <p>Sí. NASA FIRMS es dominio público y esta web sirve el JSON abierto en <code>/incendios/data/incendios.json</code>. Cita la fuente NASA FIRMS y el enlace a esta página. Puedes también embeber el mapa (mira la sección de arriba).</p>
+                </details>
+                <details>
+                    <summary>Veo humo desde mi casa. ¿Qué hago?</summary>
+                    <p>Llama al <strong>112</strong>. No mires este mapa primero para "confirmar" — nosotros vamos con horas de retraso, ellos coordinan la emergencia en directo.</p>
+                </details>
+            </div>
+        </section>
+
+        <section class="block" id="recursos">
+            <h2>Recursos y guías oficiales</h2>
+            <div class="resources">
+                <a class="resource" href="https://www.proteccioncivil.es/" target="_blank" rel="noopener">
+                    <div class="resource-icon">🛡️</div>
+                    <div>
+                        <strong>Protección Civil</strong>
+                        <span>Guías de autoprotección y alertas nacionales</span>
+                    </div>
+                </a>
+                <a class="resource" href="https://www.aemet.es/es/eltiempo/prediccion/avisos" target="_blank" rel="noopener">
+                    <div class="resource-icon">⚠️</div>
+                    <div>
+                        <strong>Avisos AEMET</strong>
+                        <span>Alertas meteorológicas activas (calor, viento, tormentas)</span>
+                    </div>
+                </a>
+                <a class="resource" href="https://effis.jrc.ec.europa.eu/apps/effis_current_situation/" target="_blank" rel="noopener">
+                    <div class="resource-icon">🇪🇺</div>
+                    <div>
+                        <strong>EFFIS Current Situation</strong>
+                        <span>Sistema europeo de información sobre incendios</span>
+                    </div>
+                </a>
+                <a class="resource" href="https://www.miteco.gob.es/es/biodiversidad/temas/incendios-forestales/estadisticas.html" target="_blank" rel="noopener">
+                    <div class="resource-icon">📊</div>
+                    <div>
+                        <strong>Estadísticas MITECO</strong>
+                        <span>EGIF: hectáreas oficiales quemadas en España</span>
+                    </div>
+                </a>
+                <a class="resource" href="https://t.me/proteccion_civil" target="_blank" rel="noopener">
+                    <div class="resource-icon">📢</div>
+                    <div>
+                        <strong>Telegram Protección Civil</strong>
+                        <span>Canal oficial con alertas en tiempo real</span>
+                    </div>
+                </a>
+                <a class="resource" href="https://www.guardiacivil.es/es/institucional/especialidades/Servicio_Proteccion_Naturaleza/" target="_blank" rel="noopener">
+                    <div class="resource-icon">🌲</div>
+                    <div>
+                        <strong>SEPRONA</strong>
+                        <span>Guardia Civil — denuncia de delitos ambientales</span>
+                    </div>
+                </a>
             </div>
         </section>
 
@@ -391,8 +570,13 @@
     </div>
 </footer>
 
+<a href="tel:112" class="fab-112" aria-label="Llamar al 112 (emergencia)" title="Llamar al 112 (emergencia)">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+    <span>112</span>
+</a>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-<script src="js/app.js?v=9"></script>
+<script src="js/app.js?v=10"></script>
 </body>
 </html>
