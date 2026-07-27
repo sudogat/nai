@@ -69,13 +69,27 @@ if (!$MAP_KEY || $MAP_KEY === 'AQUI_TU_CLAVE' || $MAP_KEY === 'PON_AQUI_TU_MAP_K
 
 // Bounding box de España peninsular + Baleares + Canarias no incluidas (ajusta si quieres)
 $bbox = '-9.5,35.9,4.3,43.8';
-$days = 7;
+// La FIRMS Area API restringe day_range a [1..5] (min 1, max 5).
+$days = 5;
 
+// Nombres actuales de las fuentes en la Area API (formato UPPERCASE_NRT).
+// Los antiguos ('viirs-snpp', 'modis-t', ...) provocan "Invalid source".
 $sources = [
-    'VIIRS_SNPP' => 'viirs-snpp',
-    'VIIRS_NOAA' => 'viirs-n20',
-    'MODIS_TERRA' => 'modis-t',
+    'VIIRS_SNPP' => 'VIIRS_SNPP_NRT',
+    'VIIRS_NOAA20' => 'VIIRS_NOAA20_NRT',
+    'MODIS' => 'MODIS_NRT',
 ];
+
+// Verifica primero que la MAP_KEY es valida usando el endpoint dedicado
+// mapkey_status. Ahorra 3 requests a Area con clave invalida y da un
+// mensaje diagnostico claro.
+$statusUrl = "https://firms.modaps.eosdis.nasa.gov/mapserver/mapkey_status/?MAP_KEY=$MAP_KEY";
+$statusBody = fetch_url($statusUrl, $statusError);
+if ($statusBody) {
+    log_message('mapkey_status: ' . str_replace(["\r","\n"], ['\\r','\\n'], substr($statusBody, 0, 500)));
+} else {
+    log_message('mapkey_status: no se pudo comprobar (' . $statusError . ')');
+}
 
 $allData = [];
 $errors = [];
