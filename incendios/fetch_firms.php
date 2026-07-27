@@ -12,6 +12,13 @@
  * Nunca hardcodear la clave en este archivo (el repo es público).
  */
 
+// Cuando se invoca por navegador imprime el mismo log que va al fichero,
+// para no depender de FTP para ver el resultado. Se detecta via HTTP_HOST.
+$IS_WEB = !empty($_SERVER['HTTP_HOST']);
+if ($IS_WEB) {
+    header('Content-Type: text/plain; charset=utf-8');
+}
+
 // --- Configuración ---
 $DATA_DIR = __DIR__ . '/data';
 $OUTPUT_FILE = $DATA_DIR . '/incendios.json';
@@ -281,12 +288,19 @@ function haversineDistance($lat1, $lon1, $lat2, $lon2) {
 }
 
 function log_message($msg, $isError = false) {
+    global $IS_WEB;
     $timestamp = date('Y-m-d H:i:s');
     $logFile = __DIR__ . '/fetch_firms.log';
     $prefix = $isError ? '[ERROR]' : '[INFO]';
     $logLine = "[$timestamp] $prefix $msg\n";
 
     file_put_contents($logFile, $logLine, FILE_APPEND);
+
+    if (!empty($IS_WEB)) {
+        echo $logLine;
+        @ob_flush();
+        @flush();
+    }
 
     if (file_exists($logFile) && filesize($logFile) > 5242880) {
         $lines = file($logFile);
