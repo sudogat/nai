@@ -92,19 +92,24 @@ foreach ($sources as $name => $source) {
         continue;
     }
     $anySuccess = true;
+    log_message("$name: " . strlen($csv) . " bytes recibidos. Primeros 300 chars: " . str_replace(["\r","\n"], ['\\r','\\n'], substr($csv, 0, 300)));
 
     $lines = explode("\n", $csv);
     $header = null;
+    $rowCount = 0;
+    $addedCount = 0;
 
     foreach ($lines as $line) {
         if (empty(trim($line))) continue;
 
         if ($header === null) {
-            $header = str_getcsv($line);
+            $header = str_getcsv($line, ',', '"', '\\');
+            log_message("$name: header = " . implode(',', $header));
             continue;
         }
 
-        $row = str_getcsv($line);
+        $row = str_getcsv($line, ',', '"', '\\');
+        $rowCount++;
         if (count($row) < 5) continue;
 
         $data = @array_combine($header, $row);
@@ -152,8 +157,10 @@ foreach ($sources as $name => $source) {
 
         if (!$isDuplicate) {
             $allData[] = $feature;
+            $addedCount++;
         }
     }
+    log_message("$name: filas parseadas=$rowCount, features nuevas=$addedCount, total acumulado=" . count($allData));
 }
 
 // Si TODAS las fuentes fallaron: preserva el JSON anterior.
@@ -208,7 +215,7 @@ function fetch_url($url, &$error = null) {
         $body = curl_exec($ch);
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $curlErr = curl_error($ch);
-        curl_close($ch);
+        // curl_close() esta deprecado y es no-op desde PHP 8.0. Omitido.
 
         if ($body !== false && $status >= 200 && $status < 300 && strlen($body) > 0) {
             return $body;
