@@ -3,143 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Incendios España - Datos en tiempo real</title>
+    <title>Incendios forestales España — datosclaros.es</title>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=6">
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="#" class="logo">🔥 Incendios España</a>
-            <div class="nav-toggle">🌙</div>
-        </div>
-    </nav>
 
-    <div class="container">
-        <!-- Hero Section -->
-        <header class="hero">
-            <h1>Incendios forestales<br><em>en tiempo real</em></h1>
-            <p>Monitoreo de focos activos en España. Datos NASA FIRMS + análisis automático. Información indicativa.</p>
-            <div class="timestamp">Última actualización: <span id="timestamp-hero">--:--</span></div>
-        </header>
-
-        <!-- Filtros -->
-        <div class="controls">
-            <div class="filter-group">
-                <label>Región:</label>
-                <select id="regionFilter">
-                    <option value="">España (Todas)</option>
-                    <option value="cataluña">Cataluña</option>
-                    <option value="madrid">Madrid</option>
-                    <option value="andalucía">Andalucía</option>
-                    <option value="castilla-león">Castilla-León</option>
-                    <option value="galicia">Galicia</option>
-                    <option value="comunidad-valenciana">Comunidad Valenciana</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>Rango:</label>
-                <select id="daysFilter">
-                    <option value="1">Últimas 24h</option>
-                    <option value="3" selected>Últimos 3 días</option>
-                    <option value="7">Última semana</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Stats Grid -->
-        <section class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-emoji">🔥</div>
-                <div class="stat-content">
-                    <div class="stat-number" id="activeCount">0</div>
-                    <div class="stat-label">Incendios activos</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-emoji">📏</div>
-                <div class="stat-content">
-                    <div class="stat-number" id="hectaresCount">0</div>
-                    <div class="stat-label">Hectáreas (est)</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-emoji">⚡</div>
-                <div class="stat-content">
-                    <div class="stat-number" id="intensityAvg">0</div>
-                    <div class="stat-label">Intensidad (MW)</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-emoji">📅</div>
-                <div class="stat-content">
-                    <div class="stat-number" id="lastDay">0</div>
-                    <div class="stat-label">Últimas 24h</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Map Section -->
-        <section class="section">
-            <h2>🗺️ Mapa interactivo</h2>
-            <div class="map-container">
-                <div id="map"></div>
-            </div>
-        </section>
-
-        <!-- Charts Section -->
-        <section class="section">
-            <h2>📊 Análisis</h2>
-            <div class="charts-grid">
-                <div class="chart-box">
-                    <h3>Evolución (últimos 7 días)</h3>
-                    <canvas id="evolutionChart" height="80"></canvas>
-                </div>
-                <div class="chart-box">
-                    <h3>Por región</h3>
-                    <canvas id="regionChart" height="80"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <!-- Table Section -->
-        <section class="section">
-            <h2>📋 Detecciones</h2>
-            <div class="table-container">
-                <table id="incendiosTable">
-                    <thead>
-                        <tr>
-                            <th>Fecha/Hora</th>
-                            <th>Región</th>
-                            <th>Potencia (MW)</th>
-                            <th>Confianza</th>
-                            <th>Sensor</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer>
-            <div class="footer-content">
-                <p><strong>Datos públicos · NASA FIRMS (VIIRS/MODIS) · Información indicativa</strong></p>
-                <p>Consultar autoridades oficiales (INFOCA, JCyL, Bombers, etc.) para decisiones operativas.</p>
-                <div class="social-links">
-                    <a href="https://instagram.com/lluisridao" target="_blank">📷 Instagram</a>
-                    <a href="https://x.com/lluisridao" target="_blank">𝕏 X</a>
-                    <a href="https://youtube.com/@lluisridao" target="_blank">▶️ YouTube</a>
-                </div>
-                <p>Parte de <a href="https://datosclaros.es">datosclaros.es</a> · Creado por <a href="https://lluisridao.com">Lluís Ridao</a></p>
-            </div>
-        </footer>
+<header class="site-header">
+    <div class="wrap">
+        <a href="/" class="brand">datosclaros<span>.es</span></a>
+        <nav class="nav">
+            <a href="https://datosclaros.es">Inicio</a>
+            <a href="/incendios" aria-current="page">Incendios</a>
+        </nav>
     </div>
+</header>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <script src="js/app.js?v=5"></script>
+<main class="wrap">
+
+    <section class="hero">
+        <h1>Incendios forestales en España</h1>
+        <p class="lede">Focos activos detectados por satélite (NASA FIRMS · VIIRS y MODIS). Datos abiertos, agregados en tiempo casi real. Información indicativa: consulta INFOCA, JCyL, Bombers y otras autoridades oficiales para decisiones operativas.</p>
+        <p class="meta">Última actualización: <span id="timestamp-hero">—</span> · Fuente: NASA FIRMS</p>
+    </section>
+
+    <section class="filters" aria-label="Filtros">
+        <label class="field">
+            <span>Comunidad autónoma</span>
+            <select id="regionFilter">
+                <option value="">Todas</option>
+                <option value="andalucía">Andalucía</option>
+                <option value="aragón">Aragón</option>
+                <option value="asturias">Asturias</option>
+                <option value="baleares">Baleares</option>
+                <option value="canarias">Canarias</option>
+                <option value="cantabria">Cantabria</option>
+                <option value="castilla-la mancha">Castilla-La Mancha</option>
+                <option value="castilla-león">Castilla y León</option>
+                <option value="cataluña">Cataluña</option>
+                <option value="comunidad valenciana">Comunidad Valenciana</option>
+                <option value="extremadura">Extremadura</option>
+                <option value="galicia">Galicia</option>
+                <option value="la rioja">La Rioja</option>
+                <option value="madrid">Madrid</option>
+                <option value="murcia">Murcia</option>
+                <option value="navarra">Navarra</option>
+                <option value="país vasco">País Vasco</option>
+            </select>
+        </label>
+        <label class="field">
+            <span>Rango temporal</span>
+            <select id="daysFilter">
+                <option value="1">Últimas 24 h</option>
+                <option value="3" selected>Últimos 3 días</option>
+                <option value="7">Últimos 7 días</option>
+            </select>
+        </label>
+    </section>
+
+    <section class="stats" aria-label="Resumen">
+        <article class="stat">
+            <div class="stat-value" id="activeCount">0</div>
+            <div class="stat-label">Focos detectados</div>
+        </article>
+        <article class="stat">
+            <div class="stat-value" id="hectaresCount">0</div>
+            <div class="stat-label">Hectáreas (estimadas)</div>
+        </article>
+        <article class="stat">
+            <div class="stat-value"><span id="intensityAvg">0</span> <small>MW</small></div>
+            <div class="stat-label">Intensidad media</div>
+        </article>
+        <article class="stat">
+            <div class="stat-value" id="lastDay">0</div>
+            <div class="stat-label">En las últimas 24 h</div>
+        </article>
+    </section>
+
+    <section class="block">
+        <h2>Mapa</h2>
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+        <p class="legend">
+            <span class="dot dot-high"></span> Confianza alta
+            <span class="dot dot-med"></span> Media
+            <span class="dot dot-low"></span> Baja
+        </p>
+    </section>
+
+    <section class="block">
+        <h2>Análisis</h2>
+        <div class="chart-grid">
+            <article class="chart-card">
+                <h3>Evolución (últimos 7 días)</h3>
+                <canvas id="evolutionChart" height="200"></canvas>
+            </article>
+            <article class="chart-card">
+                <h3>Distribución por comunidad</h3>
+                <canvas id="regionChart" height="200"></canvas>
+            </article>
+        </div>
+    </section>
+
+    <section class="block">
+        <h2>Últimas noticias</h2>
+        <p class="meta">Fuentes oficiales y prensa agregadas por Google Noticias.</p>
+        <ul class="news" id="newsList">
+            <li class="news-empty">Cargando noticias…</li>
+        </ul>
+    </section>
+
+    <section class="block">
+        <h2>Detecciones</h2>
+        <div class="table-wrap">
+            <table id="incendiosTable">
+                <thead>
+                    <tr>
+                        <th>Fecha y hora</th>
+                        <th>Comunidad</th>
+                        <th>Potencia (MW)</th>
+                        <th>Confianza</th>
+                        <th>Sensor</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<footer class="site-footer">
+    <div class="wrap">
+        <p><strong>datosclaros.es</strong> — datos públicos accesibles.</p>
+        <p class="disclaimer">NASA FIRMS (VIIRS Suomi NPP + NOAA-20, MODIS). Información indicativa. Para operaciones, consulta INFOCA, JCyL, Bombers y demás autoridades oficiales.</p>
+        <p class="creds">Creado por <a href="https://lluisridao.com">Lluís Ridao</a> · <a href="https://instagram.com/lluisridao">Instagram</a> · <a href="https://x.com/lluisridao">X</a> · <a href="https://youtube.com/@lluisridao">YouTube</a></p>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="js/app.js?v=6"></script>
 </body>
 </html>
