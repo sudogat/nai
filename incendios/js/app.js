@@ -358,7 +358,6 @@ function refreshAll() {
     updateStats();
     updateCharts();
     renderTopFires();
-    renderAuthority();
     renderRanking();
 }
 
@@ -411,38 +410,6 @@ function renderRanking() {
     }).join('');
 }
 
-// ---------- Generador de embed ----------
-function setupEmbed() {
-    const w = document.getElementById('embedWidth');
-    const h = document.getElementById('embedHeight');
-    const code = document.getElementById('embedCode');
-    const btn = document.getElementById('copyEmbedBtn');
-    if (!w || !h || !code || !btn) return;
-
-    function render() {
-        const width = w.value;
-        const height = h.value;
-        const widthAttr = width === '100%' ? '100%' : (width + 'px');
-        const url = 'https://bigdata.datosclaros.es/incendios/';
-        code.value = `<iframe src="${url}" width="${widthAttr}" height="${height}" style="border:0;border-radius:12px;" title="Incendios forestales España — datosclaros.es" loading="lazy"></iframe>`;
-    }
-    render();
-    w.addEventListener('change', render);
-    h.addEventListener('change', render);
-
-    btn.addEventListener('click', async () => {
-        code.select();
-        try {
-            await navigator.clipboard.writeText(code.value);
-            const orig = btn.textContent;
-            btn.textContent = '✓ Copiado';
-            setTimeout(() => { btn.textContent = orig; }, 1500);
-        } catch (e) {
-            document.execCommand('copy');
-        }
-    });
-}
-
 // ---------- Top 10 focos más intensos ----------
 function renderTopFires() {
     const container = document.getElementById('topFires');
@@ -467,56 +434,6 @@ function renderTopFires() {
             </div>
         `;
     }).join('');
-}
-
-// ---------- Enlaces oficiales por CCAA ----------
-const AUTHORITIES = {
-    'andalucía': [
-        ['INFOCA', 'Junta de Andalucía', 'https://www.juntadeandalucia.es/medioambiente/portal/areas-tematicas/incendios-forestales'],
-        ['112 Andalucía', 'Emergencias', 'https://www.112andalucia.es/'],
-    ],
-    'aragón': [['Gob. Aragón - Incendios', 'Prevención y extinción', 'https://www.aragon.es/-/incendios-forestales']],
-    'asturias': [['Bomberos del Principado', 'Emergencias', 'https://bomberosdeasturias.es/']],
-    'baleares': [['IBANAT', 'Instituto Balear de la Naturaleza', 'https://www.caib.es/sites/incendisforestals/es/inicio/']],
-    'canarias': [['Gob. Canarias - Emergencias', '112 Canarias', 'https://www.gobiernodecanarias.org/emergencias/']],
-    'cantabria': [['Gob. Cantabria - Emergencias', 'Protección civil', 'https://112.cantabria.es/']],
-    'castilla-la mancha': [['Plan INFOCAM', 'JCCM', 'https://www.castillalamancha.es/gobierno/agrimedambydesrur/estructura/dgpolfor/actuaciones/plan-de-emergencia-por-incendios-forestales-castilla-la-mancha']],
-    'castilla-león': [['Plan INFOCAL', 'JCyL', 'https://patrimonionatural.org/servicio-de-prevencion-y-extincion-de-incendios']],
-    'cataluña': [
-        ['Bombers de la Generalitat', 'Emergencias', 'https://interior.gencat.cat/ca/arees_dactuacio/bombers'],
-        ['Agents Rurals', 'Vigilancia forestal', 'https://agricultura.gencat.cat/ca/ambits/medi-natural/agents-rurals/'],
-    ],
-    'comunidad valenciana': [['Emergencias GVA', '112 Comunitat Valenciana', 'https://www.112cv.gva.es/']],
-    'extremadura': [['Plan INFOEX', 'Junta Extremadura', 'https://extremambiente.juntaex.es/incendios-forestales.html']],
-    'galicia': [['SPDCIF', 'Xunta de Galicia', 'https://mediorural.xunta.gal/es/temas/prevencion-e-defensa-contra-os-incendios-forestais']],
-    'la rioja': [['Gob. La Rioja - Emergencias', '112 SOS Rioja', 'https://www.larioja.org/emergencias-112/es']],
-    'madrid': [['Plan INFOMA', 'Comunidad de Madrid', 'https://www.comunidad.madrid/servicios/urbanismo-medio-ambiente/prevencion-lucha-contra-incendios-forestales']],
-    'murcia': [['Plan INFOMUR', 'Gob. Murcia', 'https://www.carm.es/web/pagina?IDCONTENIDO=1873&IDTIPO=100&RASTRO=c1655$m']],
-    'navarra': [['Gob. Navarra - Emergencias', 'ANE 112', 'https://www.navarra.es/es/temas/seguridad/emergencias-y-proteccion-civil']],
-    'país vasco': [['Emergencias Osakidetza', 'SOS Deiak 112', 'https://www.euskadi.eus/emergencias-112/']],
-};
-
-function renderAuthority() {
-    const container = document.getElementById('authorityLinks');
-    if (!container) return;
-    const region = document.getElementById('regionFilter').value.toLowerCase();
-
-    // Bloque siempre visible: nacionales + Europa
-    const always = [
-        ['Protección Civil', 'Ministerio del Interior', 'https://www.proteccioncivil.es/'],
-        ['MITECO - Incendios', 'Estadísticas EGIF', 'https://www.miteco.gob.es/es/biodiversidad/temas/incendios-forestales.html'],
-        ['EFFIS Copernicus', 'Situación europea', 'https://effis.jrc.ec.europa.eu/apps/effis_current_situation/'],
-        ['112', 'Emergencias — llamada gratuita', 'tel:112'],
-    ];
-
-    let items = [];
-    if (region && AUTHORITIES[region]) items = AUTHORITIES[region];
-
-    const html = [
-        ...items.map(([name, sub, url]) => `<a href="${url}" target="_blank" rel="noopener"><strong>${escapeHtml(name)}</strong><small>${escapeHtml(sub)}</small></a>`),
-        ...always.map(([name, sub, url]) => `<a href="${url}" ${url.startsWith('tel:') ? '' : 'target="_blank" rel="noopener"'}><strong>${escapeHtml(name)}</strong><small>${escapeHtml(sub)}</small></a>`),
-    ].join('');
-    container.innerHTML = html || '<p class="auth-empty">Sin autoridades locales.</p>';
 }
 
 // ---------- Exportar CSV ----------
@@ -612,7 +529,6 @@ window.addEventListener('load', () => {
     setupTheme();
     setupShare();
     setupExport();
-    setupEmbed();
     setupYear();
     initMap();
     loadIncendios();

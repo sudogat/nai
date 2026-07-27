@@ -1,0 +1,90 @@
+{
+  "nota": "Series macro sobre la España rural. Cifras aproximadas a partir de fuentes públicas (INE, Censo Agrario, Inventario Forestal Nacional, MITECO). Verifica en la fuente antes de citar en un medio.",
+  "aviso": "Estos datos describen tendencias generales del país. NO establecen por sí solos ninguna relación causa-efecto con los incendios. Sirven de contexto.",
+
+  "fuentes": [
+    { "nombre": "INE — Cifras oficiales de población", "url": "https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736177011" },
+    { "nombre": "INE — Censo Agrario", "url": "https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736176851" },
+    { "nombre": "MITECO — Inventario Forestal Nacional", "url": "https://www.miteco.gob.es/es/biodiversidad/servicios/banco-datos-naturaleza/informacion-disponible/inventario-forestal-nacional.html" },
+    { "nombre": "MITECO — Estadística de incendios (EGIF)", "url": "https://www.miteco.gob.es/es/biodiversidad/temas/incendios-forestales/estadisticas.html" }
+  ],
+
+  "poblacion_rural": {
+    "titulo": "Población en municipios de menos de 2.000 habitantes",
+    "unidad": "millones de personas",
+    "fuente": "INE — Padrón municipal",
+    "descripcion": "La España de los pueblos pequeños ha perdido población de forma sostenida desde los años 50. Menos gente en el campo significa menos ganadería extensiva, menos limpieza de monte y más combustible acumulado.",
+    "serie": [
+      { "anio": 1950, "valor": 12.1 },
+      { "anio": 1960, "valor": 11.0 },
+      { "anio": 1970, "valor": 8.2 },
+      { "anio": 1981, "valor": 6.6 },
+      { "anio": 1991, "valor": 5.9 },
+      { "anio": 2001, "valor": 5.4 },
+      { "anio": 2011, "valor": 5.2 },
+      { "anio": 2021, "valor": 4.8 },
+      { "anio": 2024, "valor": 4.7 }
+    ]
+  },
+
+  "explotaciones_agrarias": {
+    "titulo": "Explotaciones agrarias activas",
+    "unidad": "miles de explotaciones",
+    "fuente": "INE — Censo Agrario",
+    "descripcion": "En cuatro décadas España ha perdido más de la mitad de sus explotaciones agrarias. Cada explotación que cierra es superficie que deja de gestionarse y que, con los años, se convierte en matorral continuo.",
+    "serie": [
+      { "anio": 1982, "valor": 2378 },
+      { "anio": 1989, "valor": 1791 },
+      { "anio": 1999, "valor": 1764 },
+      { "anio": 2009, "valor": 990 },
+      { "anio": 2020, "valor": 914 }
+    ]
+  },
+
+  "superficie_forestal": {
+    "titulo": "Superficie forestal española",
+    "unidad": "millones de hectáreas",
+    "fuente": "MITECO — Inventarios Forestales Nacionales",
+    "descripcion": "Contra lo que mucha gente supone, la superficie forestal española ha CRECIDO. No porque se plante más, sino porque el campo abandonado se convierte en matorral y luego en monte. El problema no es que falte bosque: es que hay más monte y menos gente gestionándolo.",
+    "serie": [
+      { "anio": 1975, "valor": 21.5 },
+      { "anio": 1990, "valor": 25.6 },
+      { "anio": 2000, "valor": 26.3 },
+      { "anio": 2010, "valor": 27.5 },
+      { "anio": 2020, "valor": 27.9 }
+    ]
+  },
+
+  "cabana_extensiva": {
+    "titulo": "Cabaña de ovino y caprino",
+    "unidad": "millones de cabezas",
+    "fuente": "MAPA — Encuestas ganaderas",
+    "descripcion": "El ovino y el caprino en extensivo son los grandes desbrozadores naturales. Su retroceso deja el sotobosque sin comer y aumenta la carga de combustible fino.",
+    "serie": [
+      { "anio": 1990, "valor": 27.6 },
+      { "anio": 2000, "valor": 26.6 },
+      { "anio": 2010, "valor": 19.7 },
+      { "anio": 2020, "valor": 18.4 },
+      { "anio": 2023, "valor": 17.5 }
+    ]
+  },
+
+  "claves": [
+    {
+      "titulo": "Menos gente, más monte",
+      "texto": "El vaciamiento rural y el crecimiento forestal son dos caras del mismo proceso. La superficie de monte crece mientras la población que la gestionaba desaparece. El resultado es más biomasa continua y menos discontinuidades en el paisaje."
+    },
+    {
+      "titulo": "El paisaje en mosaico desaparece",
+      "texto": "Antes, cultivos, pastos y bosque se alternaban, y esa mezcla frenaba el fuego de forma natural. Al abandonarse los cultivos de secano y los pastos, el monte se vuelve continuo y el fuego encuentra combustible sin interrupción durante kilómetros."
+    },
+    {
+      "titulo": "Incendios de sexta generación",
+      "texto": "Los técnicos hablan de incendios que generan su propia meteorología y superan cualquier capacidad de extinción. No se apagan: se gestionan. La única palanca real es reducir el combustible antes de que llegue el verano."
+    },
+    {
+      "titulo": "La extinción ha mejorado mucho",
+      "texto": "España quema hoy bastante menos superficie que en los años 80 y 90 pese a tener más monte. La profesionalización de los operativos funciona. El riesgo es que la mejora en extinción tape la falta de gestión preventiva."
+    }
+  ]
+}

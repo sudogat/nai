@@ -1,0 +1,31 @@
+{
+  "_LEEME": "Registro de casos VERIFICADOS de cambio de uso del suelo en terreno quemado. Está vacío a propósito. Solo añade un caso cuando tengas al menos una fuente primaria comprobable (BOE, boletín autonómico, expediente urbanístico, sentencia o pieza periodística que cite el expediente). Si no puedes enlazar la fuente, NO lo añadas.",
+
+  "_COMO_ANADIR_UN_CASO": [
+    "1. Confirma que hubo incendio en ese punto exacto: búscalo en la página Antes/Ahora o en el EGIF del MITECO.",
+    "2. Confirma qué hay hoy: Catastro (sedecatastro.gob.es), Corine Land Cover o vista satélite actual.",
+    "3. Busca el expediente: la Ley de Montes 43/2003 art. 50 obliga a que cualquier cambio de uso en 30 años tras el incendio esté autorizado por decreto o acuerdo publicado en el boletín oficial de la comunidad autónoma.",
+    "4. Rellena TODOS los campos, incluido 'fuentes' con al menos una URL.",
+    "5. Si el expediente demuestra que el cambio es legal y anterior al incendio, o que no hay relación, NO lo publiques como caso: no lo es."
+  ],
+
+  "_PLANTILLA": {
+    "nombre": "Nombre corto del caso",
+    "lat": 0.0,
+    "lon": 0.0,
+    "ccaa": "Comunidad autónoma",
+    "municipio": "Municipio",
+    "anio_incendio": 2000,
+    "hectareas_incendio": 0,
+    "uso_antes": "Qué había antes del incendio (monte arbolado, matorral, pastos...)",
+    "uso_despues": "Qué hay hoy (planta fotovoltaica, polígono industrial, urbanización, sigue siendo monte...)",
+    "anio_cambio": 2000,
+    "estado_legal": "autorizado_por_decreto | pendiente | sin_expediente_localizado | anterior_al_incendio",
+    "resumen": "Dos o tres frases neutras describiendo lo verificado. Sin adjetivos.",
+    "fuentes": [
+      { "titulo": "Nombre de la fuente", "url": "https://..." }
+    ]
+  },
+
+  "casos": []
+}
