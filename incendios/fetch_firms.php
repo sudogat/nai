@@ -13,16 +13,6 @@
  */
 
 // --- Configuración ---
-$configFile = __DIR__ . '/config.php';
-if (is_readable($configFile)) {
-    require_once $configFile;
-}
-
-$MAP_KEY = getenv('FIRMS_MAP_KEY');
-if (!$MAP_KEY && defined('FIRMS_MAP_KEY')) {
-    $MAP_KEY = FIRMS_MAP_KEY;
-}
-
 $DATA_DIR = __DIR__ . '/data';
 $OUTPUT_FILE = $DATA_DIR . '/incendios.json';
 
@@ -32,8 +22,31 @@ if (!is_dir($DATA_DIR)) {
 
 log_message('Starting FIRMS data fetch');
 
-if (!$MAP_KEY) {
-    log_message('ABORT: no MAP_KEY. Define FIRMS_MAP_KEY en config.php o como variable de entorno.', true);
+$configFile = __DIR__ . '/config.php';
+log_message("Looking for config at: $configFile");
+log_message('config.php file_exists: ' . (file_exists($configFile) ? 'yes' : 'NO'));
+log_message('config.php is_readable: ' . (is_readable($configFile) ? 'yes' : 'NO'));
+if (is_readable($configFile)) {
+    require_once $configFile;
+    log_message('config.php loaded');
+} else {
+    // Listado del directorio para pistar si esta con otro nombre.
+    $siblings = @scandir(__DIR__) ?: [];
+    $configLike = array_values(array_filter($siblings, function ($f) {
+        return stripos($f, 'config') !== false;
+    }));
+    log_message('config-like files in dir: ' . (empty($configLike) ? '(none)' : implode(', ', $configLike)));
+}
+
+$MAP_KEY = getenv('FIRMS_MAP_KEY');
+if (!$MAP_KEY && defined('FIRMS_MAP_KEY')) {
+    $MAP_KEY = FIRMS_MAP_KEY;
+}
+log_message('FIRMS_MAP_KEY defined: ' . (defined('FIRMS_MAP_KEY') ? 'yes' : 'no'));
+log_message('MAP_KEY resolved: ' . ($MAP_KEY ? 'yes (' . strlen($MAP_KEY) . ' chars)' : 'NO'));
+
+if (!$MAP_KEY || $MAP_KEY === 'AQUI_TU_CLAVE' || $MAP_KEY === 'PON_AQUI_TU_MAP_KEY') {
+    log_message('ABORT: MAP_KEY no definida o sigue con el valor placeholder. Edita config.php con la clave real de NASA FIRMS.', true);
     exit(1);
 }
 
