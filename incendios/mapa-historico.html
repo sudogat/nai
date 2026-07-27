@@ -26,7 +26,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-    <link rel="stylesheet" href="css/style.css?v=12">
+    <link rel="stylesheet" href="css/style.css?v=13">
 
     <script>
         (function () {
@@ -34,8 +34,41 @@
             document.documentElement.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
         })();
     </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Incendios España — datosclaros.es",
+      "url": "https://bigdata.datosclaros.es/incendios/",
+      "inLanguage": "es-ES",
+      "isAccessibleForFree": true,
+      "author": {
+        "@type": "Person",
+        "name": "Lluís Ridao",
+        "url": "https://lluisridao.com",
+        "sameAs": [
+          "https://lluisridao.com",
+          "https://ridanet.com",
+          "https://datosclaros.es",
+          "https://x.com/lluisridao",
+          "https://instagram.com/lluisridao",
+          "https://facebook.com/lluisridao"
+        ]
+      },
+      "creator": { "@type": "Person", "name": "Lluís Ridao", "url": "https://lluisridao.com" },
+      "publisher": { "@type": "Person", "name": "Lluís Ridao", "url": "https://lluisridao.com" },
+      "disambiguatingDescription": "Proyecto personal e independiente de divulgación de datos públicos. No es un sitio web oficial ni está afiliado a ninguna administración pública, agencia espacial u organismo de emergencias."
+    }
+    </script>
 </head>
 <body>
+
+<div class="topbar">
+    <div class="wrap">
+        <span class="topbar-warn"><strong>Web no oficial</strong><span class="topbar-sep">·</span>Proyecto independiente, sin vínculo con ninguna administración</span>
+        <span class="topbar-author">Por <a href="https://lluisridao.com" target="_blank" rel="noopener">Lluís Ridao</a><span class="topbar-sep">·</span><a href="/incendios/aviso-legal.html">Aviso legal</a></span>
+    </div>
+</div>
 
 <header class="site-header">
     <div class="wrap">
@@ -72,6 +105,10 @@
             <span class="eyebrow">🔍 Investigación ciudadana · Satélite</span>
             <h1>¿Qué había antes<br><em>y qué hay ahora?</em></h1>
             <p class="lede">Mapa de los grandes incendios forestales de España. Elige un año, haz clic en un incendio y compara <strong>imágenes satelitales</strong> de antes y después. ¿Se regeneró el bosque? ¿Se plantó de nuevo? ¿O apareció otra cosa (fábrica, parque solar, urbanización)?</p>
+            <p class="byline">
+                <span class="byline-avatar">LR</span>
+                <span class="byline-text">Un proyecto de <a href="https://lluisridao.com" target="_blank" rel="noopener"><strong>Lluís Ridao</strong></a> para <a href="https://datosclaros.es">datosclaros.es</a><br><span class="byline-warn">Sitio independiente. No es una web oficial ni sustituye a los servicios de emergencia.</span></span>
+            </p>
             <p class="meta">Herramientas oficiales: Sentinel Hub (Copernicus), Google Earth y Corine Land Cover.</p>
         </div>
     </section>
@@ -208,7 +245,8 @@
         </div>
     </div>
     <div class="wrap footer-bottom">
-        <span>&copy; <span id="year"></span> datosclaros.es &middot; Creado por <a href="https://lluisridao.com">Llu&iacute;s Ridao</a></span>
+        <span>&copy; <span id="year"></span> <strong>Llu&iacute;s Ridao</strong> &middot; <a href="https://datosclaros.es">datosclaros.es</a> &middot; Proyecto independiente, no oficial</span>
+        <span class="footer-legal"><a href="/incendios/aviso-legal.html">Aviso legal y autor&iacute;a</a></span>
     </div>
 </footer>
 
@@ -219,6 +257,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="js/mapa-historico.js?v=1"></script>
-<script src="js/nav.js?v=1"></script>
+<script src="js/nav.js?v=2"></script>
 </body>
 </html>

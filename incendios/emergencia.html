@@ -40,7 +40,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-    <link rel="stylesheet" href="css/style.css?v=12">
+    <link rel="stylesheet" href="css/style.css?v=13">
 
     <script>
         (function () {
@@ -48,8 +48,41 @@
             document.documentElement.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
         })();
     </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Incendios España — datosclaros.es",
+      "url": "https://bigdata.datosclaros.es/incendios/",
+      "inLanguage": "es-ES",
+      "isAccessibleForFree": true,
+      "author": {
+        "@type": "Person",
+        "name": "Lluís Ridao",
+        "url": "https://lluisridao.com",
+        "sameAs": [
+          "https://lluisridao.com",
+          "https://ridanet.com",
+          "https://datosclaros.es",
+          "https://x.com/lluisridao",
+          "https://instagram.com/lluisridao",
+          "https://facebook.com/lluisridao"
+        ]
+      },
+      "creator": { "@type": "Person", "name": "Lluís Ridao", "url": "https://lluisridao.com" },
+      "publisher": { "@type": "Person", "name": "Lluís Ridao", "url": "https://lluisridao.com" },
+      "disambiguatingDescription": "Proyecto personal e independiente de divulgación de datos públicos. No es un sitio web oficial ni está afiliado a ninguna administración pública, agencia espacial u organismo de emergencias."
+    }
+    </script>
 </head>
 <body>
+
+<div class="topbar">
+    <div class="wrap">
+        <span class="topbar-warn"><strong>Web no oficial</strong><span class="topbar-sep">·</span>Proyecto independiente, sin vínculo con ninguna administración</span>
+        <span class="topbar-author">Por <a href="https://lluisridao.com" target="_blank" rel="noopener">Lluís Ridao</a><span class="topbar-sep">·</span><a href="/incendios/aviso-legal.html">Aviso legal</a></span>
+    </div>
+</div>
 
 <header class="site-header">
     <div class="wrap">
@@ -86,6 +119,10 @@
             <span class="eyebrow eyebrow-alert">🚨 Guía de autoprotección</span>
             <h1>Si hay un incendio cerca,<br><em>esto es lo que debes hacer</em></h1>
             <p class="lede">Pasos básicos según Protección Civil, prevención y todos los teléfonos oficiales por comunidad autónoma.</p>
+            <p class="byline">
+                <span class="byline-avatar">LR</span>
+                <span class="byline-text">Un proyecto de <a href="https://lluisridao.com" target="_blank" rel="noopener"><strong>Lluís Ridao</strong></a> para <a href="https://datosclaros.es">datosclaros.es</a><br><span class="byline-warn">Sitio independiente. No es una web oficial ni sustituye a los servicios de emergencia.</span></span>
+            </p>
             <div class="hero-actions">
                 <a href="tel:112" class="btn btn-primary btn-emergency">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
@@ -269,7 +306,8 @@
         </div>
     </div>
     <div class="wrap footer-bottom">
-        <span>&copy; <span id="year"></span> datosclaros.es &middot; Creado por <a href="https://lluisridao.com">Llu&iacute;s Ridao</a></span>
+        <span>&copy; <span id="year"></span> <strong>Llu&iacute;s Ridao</strong> &middot; <a href="https://datosclaros.es">datosclaros.es</a> &middot; Proyecto independiente, no oficial</span>
+        <span class="footer-legal"><a href="/incendios/aviso-legal.html">Aviso legal y autor&iacute;a</a></span>
     </div>
 </footer>
 
@@ -279,6 +317,6 @@
 </a>
 
 <script src="js/paginas.js?v=1"></script>
-<script src="js/nav.js?v=1"></script>
+<script src="js/nav.js?v=2"></script>
 </body>
 </html>
