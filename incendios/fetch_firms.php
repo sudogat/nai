@@ -16,8 +16,18 @@
 // para no depender de FTP para ver el resultado. Se detecta via HTTP_HOST.
 $IS_WEB = !empty($_SERVER['HTTP_HOST']);
 if ($IS_WEB) {
+    // Vaciar cualquier buffer heredado del php.ini de WebEmpresa (output_buffering=On)
+    while (ob_get_level() > 0) { @ob_end_clean(); }
     header('Content-Type: text/plain; charset=utf-8');
+    // Errores visibles en pantalla para no morir en silencio con blank page
+    ini_set('display_errors', '1');
+    ini_set('display_startup_errors', '1');
+    error_reporting(E_ALL);
+    echo "[boot] fetch_firms.php iniciando...\n";
+    @ob_flush(); @flush();
 }
+// Curl 3 fuentes x 30s = 90s. Sube el limite para no morir por timeout.
+@set_time_limit(180);
 
 // --- Configuración ---
 $DATA_DIR = __DIR__ . '/data';
@@ -190,8 +200,8 @@ function fetch_url($url, &$error = null) {
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_TIMEOUT => 25,
+            CURLOPT_CONNECTTIMEOUT => 8,
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_USERAGENT => 'incendios-datosclaros/1.0 (+https://bigdata.datosclaros.es/incendios)',
         ]);
