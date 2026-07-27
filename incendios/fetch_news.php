@@ -28,9 +28,18 @@ if (!is_dir($DATA_DIR)) mkdir($DATA_DIR, 0755, true);
 
 log_message('Starting news fetch');
 
-// Consulta editorial: incendios forestales en España, últimos.
+// Consulta editorial: incendios forestales en España.
+// Google News agrega fuentes españolas y devuelve el nombre del medio
+// en <source>; site: nos deja pedir por medio concreto.
 $FEEDS = [
-    'google-news' => 'https://news.google.com/rss/search?q=%22incendio+forestal%22+Espa%C3%B1a&hl=es-ES&gl=ES&ceid=ES:es',
+    'google-general' => 'https://news.google.com/rss/search?q=%22incendio+forestal%22+Espa%C3%B1a&hl=es-ES&gl=ES&ceid=ES:es',
+    'google-lavanguardia' => 'https://news.google.com/rss/search?q=incendio+forestal+site%3Alavanguardia.com&hl=es-ES&gl=ES&ceid=ES:es',
+    'google-elpais' => 'https://news.google.com/rss/search?q=incendio+forestal+site%3Aelpais.com&hl=es-ES&gl=ES&ceid=ES:es',
+    'google-vilaweb' => 'https://news.google.com/rss/search?q=incendi+forestal+site%3Avilaweb.cat&hl=ca&gl=ES&ceid=ES:ca',
+    'google-rtve' => 'https://news.google.com/rss/search?q=incendio+forestal+site%3Artve.es&hl=es-ES&gl=ES&ceid=ES:es',
+    'google-elmundo' => 'https://news.google.com/rss/search?q=incendio+forestal+site%3Aelmundo.es&hl=es-ES&gl=ES&ceid=ES:es',
+    'google-abc' => 'https://news.google.com/rss/search?q=incendio+forestal+site%3Aabc.es&hl=es-ES&gl=ES&ceid=ES:es',
+    'google-324' => 'https://news.google.com/rss/search?q=incendi+forestal+site%3A3cat.cat&hl=ca&gl=ES&ceid=ES:ca',
 ];
 
 $items = [];
@@ -88,11 +97,20 @@ if (!$anySuccess) {
     exit(1);
 }
 
-// Ordenar por fecha desc, cortar a 20
+// Deduplicar por URL de destino (Google News mezcla la misma noticia entre
+// consultas). Mantener el primer aparecido (más metadata suele traer).
+$byUrl = [];
+foreach ($items as $it) {
+    $key = strtolower(trim($it['link']));
+    if (!isset($byUrl[$key])) $byUrl[$key] = $it;
+}
+$items = array_values($byUrl);
+
+// Ordenar por fecha desc, cortar a 30
 usort($items, function ($a, $b) {
     return strtotime($b['pubDate'] ?? '0') - strtotime($a['pubDate'] ?? '0');
 });
-$items = array_slice($items, 0, 20);
+$items = array_slice($items, 0, 30);
 
 $payload = [
     'timestamp' => date('c'),

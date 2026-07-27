@@ -357,6 +357,115 @@ function refreshAll() {
     filterAndRender();
     updateStats();
     updateCharts();
+    renderTopFires();
+    renderAuthority();
+}
+
+// ---------- Top 10 focos más intensos ----------
+function renderTopFires() {
+    const container = document.getElementById('topFires');
+    if (!container) return;
+    const filtered = filterIncendios();
+    if (filtered.length === 0) {
+        container.innerHTML = '<p class="meta">Sin detecciones en el rango elegido.</p>';
+        return;
+    }
+    const top = [...filtered].sort((a, b) => (b.properties.frp || 0) - (a.properties.frp || 0)).slice(0, 10);
+    container.innerHTML = top.map(f => {
+        const p = f.properties;
+        const c = f.geometry.coordinates;
+        return `
+            <div class="top-fire">
+                <div class="top-fire-header">
+                    <div class="top-fire-region">${escapeHtml(p.region || '—')}</div>
+                    <div class="top-fire-frp">${(p.frp || 0).toFixed(0)}<small> MW</small></div>
+                </div>
+                <div class="top-fire-meta">${p.acq_date} ${formatTime(p.acq_time)} · Confianza ${p.confidence} · ${p.instrument}</div>
+                <a href="https://maps.google.com/?q=${c[1]},${c[0]}" target="_blank" rel="noopener">Ver ubicación exacta →</a>
+            </div>
+        `;
+    }).join('');
+}
+
+// ---------- Enlaces oficiales por CCAA ----------
+const AUTHORITIES = {
+    'andalucía': [
+        ['INFOCA', 'Junta de Andalucía', 'https://www.juntadeandalucia.es/medioambiente/portal/areas-tematicas/incendios-forestales'],
+        ['112 Andalucía', 'Emergencias', 'https://www.112andalucia.es/'],
+    ],
+    'aragón': [['Gob. Aragón - Incendios', 'Prevención y extinción', 'https://www.aragon.es/-/incendios-forestales']],
+    'asturias': [['Bomberos del Principado', 'Emergencias', 'https://bomberosdeasturias.es/']],
+    'baleares': [['IBANAT', 'Instituto Balear de la Naturaleza', 'https://www.caib.es/sites/incendisforestals/es/inicio/']],
+    'canarias': [['Gob. Canarias - Emergencias', '112 Canarias', 'https://www.gobiernodecanarias.org/emergencias/']],
+    'cantabria': [['Gob. Cantabria - Emergencias', 'Protección civil', 'https://112.cantabria.es/']],
+    'castilla-la mancha': [['Plan INFOCAM', 'JCCM', 'https://www.castillalamancha.es/gobierno/agrimedambydesrur/estructura/dgpolfor/actuaciones/plan-de-emergencia-por-incendios-forestales-castilla-la-mancha']],
+    'castilla-león': [['Plan INFOCAL', 'JCyL', 'https://patrimonionatural.org/servicio-de-prevencion-y-extincion-de-incendios']],
+    'cataluña': [
+        ['Bombers de la Generalitat', 'Emergencias', 'https://interior.gencat.cat/ca/arees_dactuacio/bombers'],
+        ['Agents Rurals', 'Vigilancia forestal', 'https://agricultura.gencat.cat/ca/ambits/medi-natural/agents-rurals/'],
+    ],
+    'comunidad valenciana': [['Emergencias GVA', '112 Comunitat Valenciana', 'https://www.112cv.gva.es/']],
+    'extremadura': [['Plan INFOEX', 'Junta Extremadura', 'https://extremambiente.juntaex.es/incendios-forestales.html']],
+    'galicia': [['SPDCIF', 'Xunta de Galicia', 'https://mediorural.xunta.gal/es/temas/prevencion-e-defensa-contra-os-incendios-forestais']],
+    'la rioja': [['Gob. La Rioja - Emergencias', '112 SOS Rioja', 'https://www.larioja.org/emergencias-112/es']],
+    'madrid': [['Plan INFOMA', 'Comunidad de Madrid', 'https://www.comunidad.madrid/servicios/urbanismo-medio-ambiente/prevencion-lucha-contra-incendios-forestales']],
+    'murcia': [['Plan INFOMUR', 'Gob. Murcia', 'https://www.carm.es/web/pagina?IDCONTENIDO=1873&IDTIPO=100&RASTRO=c1655$m']],
+    'navarra': [['Gob. Navarra - Emergencias', 'ANE 112', 'https://www.navarra.es/es/temas/seguridad/emergencias-y-proteccion-civil']],
+    'país vasco': [['Emergencias Osakidetza', 'SOS Deiak 112', 'https://www.euskadi.eus/emergencias-112/']],
+};
+
+function renderAuthority() {
+    const container = document.getElementById('authorityLinks');
+    if (!container) return;
+    const region = document.getElementById('regionFilter').value.toLowerCase();
+
+    // Bloque siempre visible: nacionales + Europa
+    const always = [
+        ['Protección Civil', 'Ministerio del Interior', 'https://www.proteccioncivil.es/'],
+        ['MITECO - Incendios', 'Estadísticas EGIF', 'https://www.miteco.gob.es/es/biodiversidad/temas/incendios-forestales.html'],
+        ['EFFIS Copernicus', 'Situación europea', 'https://effis.jrc.ec.europa.eu/apps/effis_current_situation/'],
+        ['112', 'Emergencias — llamada gratuita', 'tel:112'],
+    ];
+
+    let items = [];
+    if (region && AUTHORITIES[region]) items = AUTHORITIES[region];
+
+    const html = [
+        ...items.map(([name, sub, url]) => `<a href="${url}" target="_blank" rel="noopener"><strong>${escapeHtml(name)}</strong><small>${escapeHtml(sub)}</small></a>`),
+        ...always.map(([name, sub, url]) => `<a href="${url}" ${url.startsWith('tel:') ? '' : 'target="_blank" rel="noopener"'}><strong>${escapeHtml(name)}</strong><small>${escapeHtml(sub)}</small></a>`),
+    ].join('');
+    container.innerHTML = html || '<p class="auth-empty">Sin autoridades locales.</p>';
+}
+
+// ---------- Exportar CSV ----------
+function setupExport() {
+    const btn = document.getElementById('exportCsvBtn');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+        const filtered = filterIncendios();
+        if (!filtered.length) {
+            alert('No hay detecciones para exportar con los filtros actuales.');
+            return;
+        }
+        const headers = ['fecha', 'hora', 'latitud', 'longitud', 'frp_mw', 'confianza', 'sensor', 'satelite', 'comunidad'];
+        const rows = filtered.map(f => {
+            const p = f.properties;
+            return [
+                p.acq_date, formatTime(p.acq_time),
+                p.latitude.toFixed(5), p.longitude.toFixed(5),
+                (p.frp || 0).toFixed(2), p.confidence,
+                p.instrument, p.satellite || '',
+                (p.region || '').replace(/,/g, ' '),
+            ].join(',');
+        });
+        const csv = headers.join(',') + '\n' + rows.join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'incendios-espana-' + new Date().toISOString().slice(0,10) + '.csv';
+        a.click();
+        URL.revokeObjectURL(a.href);
+    });
 }
 
 document.getElementById('regionFilter').addEventListener('change', refreshAll);
@@ -420,6 +529,7 @@ function clearAlerts() {
 window.addEventListener('load', () => {
     setupTheme();
     setupShare();
+    setupExport();
     setupYear();
     initMap();
     loadIncendios();
