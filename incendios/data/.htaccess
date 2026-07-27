@@ -1,0 +1,19 @@
+# .htaccess para data/
+# CORS Headers
+<FilesMatch "\.json$">
+    Header set Access-Control-Allow-Origin "*"
+    Header set Content-Type "application/json; charset=utf-8"
+</FilesMatch>
+
+# Deny direct PHP execution in data folder
+<FilesMatch "\.php$">
+    Deny from all
+</FilesMatch>
+
+# Allow directory listing (opcional)
+Options -Indexes
+
+# Gzip compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE application/json text/plain text/html text/xml text/javascript application/javascript
+</IfModule>

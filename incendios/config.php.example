@@ -1,0 +1,4 @@
+<?php
+// Copia este archivo a config.php en el servidor (NO subir al repo).
+// Consigue tu MAP_KEY en https://firms.modaps.eosdis.nasa.gov/api/map_key/
+define('FIRMS_MAP_KEY', 'PON_AQUI_TU_MAP_KEY');

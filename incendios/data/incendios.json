@@ -1,0 +1,16 @@
+{
+  "type": "FeatureCollection",
+  "timestamp": "2026-07-25T10:00:00+02:00",
+  "count": 8,
+  "errors": [],
+  "features": [
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-3.75, 40.46]}, "properties": {"acq_date": "2026-07-25", "acq_time": "0645", "latitude": 40.46, "longitude": -3.75, "frp": 125.3, "confidence": "high", "instrument": "VIIRS_SNPP", "satellite": "Suomi NPP", "region": "Madrid"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [1.45, 41.85]}, "properties": {"acq_date": "2026-07-25", "acq_time": "0720", "latitude": 41.85, "longitude": 1.45, "frp": 87.6, "confidence": "high", "instrument": "VIIRS_SNPP", "satellite": "Suomi NPP", "region": "Cataluña"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-3.2, 37.8]}, "properties": {"acq_date": "2026-07-25", "acq_time": "0815", "latitude": 37.8, "longitude": -3.2, "frp": 156.4, "confidence": "high", "instrument": "VIIRS_NOAA", "satellite": "NOAA-20", "region": "Andalucía"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-4.5, 41.2]}, "properties": {"acq_date": "2026-07-25", "acq_time": "0630", "latitude": 41.2, "longitude": -4.5, "frp": 92.1, "confidence": "high", "instrument": "MODIS_TERRA", "satellite": "Terra", "region": "Castilla-León"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-8.2, 42.5]}, "properties": {"acq_date": "2026-07-24", "acq_time": "2145", "latitude": 42.5, "longitude": -8.2, "frp": 203.7, "confidence": "high", "instrument": "VIIRS_SNPP", "satellite": "Suomi NPP", "region": "Galicia"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-1.2, 39.5]}, "properties": {"acq_date": "2026-07-25", "acq_time": "0645", "latitude": 39.5, "longitude": -1.2, "frp": 68.9, "confidence": "medium", "instrument": "VIIRS_NOAA", "satellite": "NOAA-20", "region": "Comunidad Valenciana"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-2.1, 39.1]}, "properties": {"acq_date": "2026-07-25", "acq_time": "0730", "latitude": 39.1, "longitude": -2.1, "frp": 114.2, "confidence": "high", "instrument": "MODIS_TERRA", "satellite": "Terra", "region": "Castilla-La Mancha"}},
+    {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-1.5, 42.2]}, "properties": {"acq_date": "2026-07-24", "acq_time": "2300", "latitude": 42.2, "longitude": -1.5, "frp": 79.5, "confidence": "medium", "instrument": "VIIRS_SNPP", "satellite": "Suomi NPP", "region": "Aragón"}}
+  ]
+}
