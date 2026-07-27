@@ -14,6 +14,14 @@ Options -Indexes
     AddType application/json .json
 </IfModule>
 
+# Nginx front en WebEmpresa aplica max-age agresivo. mod_expires no siempre
+# vence al microcache, pero al menos deja instrucción clara a los caches
+# intermedios.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType application/json "access plus 60 seconds"
+</IfModule>
+
 <FilesMatch "\.php$">
     Require all denied
 </FilesMatch>
