@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#dc2626">
+
+    <title>Histórico de incendios en España 1980-2025 · datosclaros.es</title>
+    <meta name="description" content="45 años de incendios forestales en España. Hectáreas quemadas por año según MITECO/EGIF, ranking de los peores años y comparativa con la media histórica.">
+    <meta name="keywords" content="histórico incendios España, MITECO EGIF, hectáreas quemadas, estadística incendios forestales, 1985 1994 2022, comparativa anual">
+    <meta name="author" content="Lluís Ridao">
+    <link rel="canonical" href="https://bigdata.datosclaros.es/incendios/historico.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="45 años de incendios en España — Histórico oficial">
+    <meta property="og:description" content="Hectáreas quemadas año a año desde 1980 según el Ministerio.">
+    <meta property="og:url" content="https://bigdata.datosclaros.es/incendios/historico.html">
+    <meta property="og:site_name" content="datosclaros.es">
+    <meta property="og:locale" content="es_ES">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@lluisridao">
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23dc2626' d='M16 2c1 4-3 5-3 10 0 3 2 5 3 5s3-2 3-5c0-2-1-3-1-4 4 3 7 7 7 12 0 6-4 10-9 10s-9-4-9-10c0-6 5-11 9-18z'/%3E%3C/svg%3E">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Dataset",
+      "name": "Histórico de hectáreas quemadas en España 1980-2025",
+      "description": "Serie histórica anual de superficie forestal quemada en España según MITECO/EGIF.",
+      "url": "https://bigdata.datosclaros.es/incendios/historico.html",
+      "creator": { "@type": "Person", "name": "Lluís Ridao", "url": "https://lluisridao.com" },
+      "publisher": { "@type": "Organization", "name": "datosclaros.es" },
+      "isBasedOn": "https://www.miteco.gob.es/es/biodiversidad/temas/incendios-forestales/estadisticas.html",
+      "temporalCoverage": "1980/2025",
+      "spatialCoverage": { "@type": "Place", "name": "España" }
+    }
+    </script>
+
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="css/style.css?v=10">
+
+    <script>
+        (function () {
+            var t = localStorage.getItem('theme');
+            document.documentElement.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
+        })();
+    </script>
+</head>
+<body>
+
+<header class="site-header">
+    <div class="wrap">
+        <a href="/" class="brand">
+            <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 2c1 4-3 5-3 10 0 3 2 5 3 5s3-2 3-5c0-2-1-3-1-4 4 3 7 7 7 12 0 6-4 10-9 10s-9-4-9-10c0-6 5-11 9-18z"/></svg>
+            <span>datosclaros<i>.es</i></span>
+        </a>
+        <nav class="nav">
+            <a href="https://datosclaros.es">Inicio</a>
+            <a href="/incendios">Tiempo real</a>
+            <a href="/incendios/historico.html" aria-current="page">Histórico</a>
+            <button id="themeToggle" class="btn-icon" aria-label="Cambiar tema" title="Cambiar tema">
+                <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/></svg>
+                <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
+        </nav>
+    </div>
+</header>
+
+<main>
+
+    <section class="hero">
+        <div class="wrap">
+            <span class="eyebrow">📚 Histórico · MITECO/EGIF</span>
+            <h1>45 años de incendios<br><em>en España</em></h1>
+            <p class="lede">Hectáreas quemadas cada año desde 1980, según la <strong>Estadística General de Incendios Forestales</strong> del Ministerio. Los peores años, la media histórica y cómo se compara la temporada actual.</p>
+            <p class="meta">Fuente: <a href="https://www.miteco.gob.es/es/biodiversidad/temas/incendios-forestales/estadisticas.html" target="_blank" rel="noopener">MITECO — EGIF</a></p>
+        </div>
+    </section>
+
+    <div class="wrap">
+
+        <div class="disclaimer" role="note">
+            <div class="disclaimer-icon">📖</div>
+            <div>
+                <strong>Estas son las cifras oficiales del Gobierno de España.</strong>
+                A diferencia de la <a href="/incendios">página en tiempo real</a> (que muestra detecciones satelitales de las últimas horas), aquí ves <em>hectáreas quemadas consolidadas por año</em>, elaboradas con partes de las comunidades autónomas y publicadas por el MITECO. Las cifras del año en curso son <strong>provisionales</strong> hasta el cierre del ejercicio.
+            </div>
+        </div>
+
+        <section class="stats" aria-label="Resumen histórico">
+            <article class="stat">
+                <div class="stat-value" id="hist-worst-year">—</div>
+                <div class="stat-label">Peor año: <span id="hist-worst-value">—</span> ha</div>
+            </article>
+            <article class="stat">
+                <div class="stat-value" id="hist-avg-30">—</div>
+                <div class="stat-label">Media últimos 30 años</div>
+            </article>
+            <article class="stat">
+                <div class="stat-value" id="hist-avg-10">—</div>
+                <div class="stat-label">Media últimos 10 años</div>
+            </article>
+            <article class="stat">
+                <div class="stat-value" id="hist-current">—</div>
+                <div class="stat-label">Año actual (provisional)</div>
+            </article>
+        </section>
+
+        <section class="block">
+            <div class="block-head">
+                <h2>Hectáreas quemadas por año</h2>
+                <p class="meta">Cada barra = un año. La línea horizontal es la media de los últimos 30 años.</p>
+            </div>
+            <div class="chart-card">
+                <div class="chart-wrap chart-wrap-tall"><canvas id="histChart"></canvas></div>
+            </div>
+        </section>
+
+        <section class="block">
+            <div class="block-head">
+                <h2>Top 10 peores años</h2>
+                <p class="meta">Los años con más superficie quemada desde 1980.</p>
+            </div>
+            <div class="top-fires" id="worstYears"></div>
+        </section>
+
+        <section class="block">
+            <div class="block-head">
+                <h2>Tabla completa</h2>
+                <p class="meta">Todos los años ordenados cronológicamente. Descarga la serie en CSV.</p>
+                <div class="actions">
+                    <button id="exportHistCsv" class="btn btn-ghost btn-sm">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        CSV
+                    </button>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Año</th>
+                            <th>Hectáreas</th>
+                            <th>vs. media 30 años</th>
+                            <th>Notas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="histBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="block info">
+            <h2>Sobre estos datos</h2>
+            <div class="info-grid">
+                <article class="info-card">
+                    <h3>De dónde salen</h3>
+                    <p>De la <strong>Estadística General de Incendios Forestales (EGIF)</strong> del Ministerio para la Transición Ecológica. Es la fuente oficial reconocida internacionalmente para España.</p>
+                    <p>Cada CCAA reporta los incendios de su territorio y el MITECO consolida y publica el informe anual.</p>
+                </article>
+                <article class="info-card">
+                    <h3>Qué incluye "hectáreas quemadas"</h3>
+                    <p>Suma de superficie arbolada, matorral y monte abierto quemados. Incluye tanto conatos (menos de 1 ha) como incendios grandes (GIF: más de 500 ha).</p>
+                </article>
+                <article class="info-card">
+                    <h3>Por qué el año en curso puede cambiar</h3>
+                    <p>Las cifras del año actual son <strong>provisionales</strong>. Se ajustan tras la campaña con las verificaciones finales de las CCAA. La cifra definitiva suele publicarse a los 6-12 meses.</p>
+                </article>
+                <article class="info-card">
+                    <h3>Por qué años como 1985, 1989 o 1994 destacan</h3>
+                    <p>Fueron temporadas especialmente áridas con episodios de calor extremo. Décadas 80-90 en general concentran los peores años porque la extinción estaba menos profesionalizada y hubo grandes plagas forestales previas.</p>
+                </article>
+                <article class="info-card">
+                    <h3>2022, un mal año reciente</h3>
+                    <p>Superó las 300.000 ha, la peor cifra desde el pico de los 90. Coincidió con una ola de calor histórica y grandes incendios en Zamora (Sierra de la Culebra), Cáceres y Ourense.</p>
+                </article>
+                <article class="info-card">
+                    <h3>Verificar y descargar</h3>
+                    <p>Descarga los informes oficiales en PDF en la <a href="https://www.miteco.gob.es/es/biodiversidad/temas/incendios-forestales/estadisticas.html" target="_blank" rel="noopener">web del MITECO</a>. Si detectas alguna cifra desactualizada aquí, avísame por <a href="https://x.com/lluisridao" target="_blank" rel="noopener">X</a>.</p>
+                </article>
+            </div>
+        </section>
+
+    </div>
+
+</main>
+
+<footer class="site-footer">
+    <div class="wrap footer-grid">
+        <div>
+            <div class="brand" style="margin-bottom:12px;">
+                <svg width="20" height="20" viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 2c1 4-3 5-3 10 0 3 2 5 3 5s3-2 3-5c0-2-1-3-1-4 4 3 7 7 7 12 0 6-4 10-9 10s-9-4-9-10c0-6 5-11 9-18z"/></svg>
+                <span>datosclaros<i>.es</i></span>
+            </div>
+            <p class="disclaimer-text">Datos públicos accesibles. Información indicativa, no operativa. Para emergencias, marca 112.</p>
+        </div>
+        <div>
+            <strong>Datos</strong>
+            <ul>
+                <li><a href="https://www.miteco.gob.es/es/biodiversidad/temas/incendios-forestales/estadisticas.html" target="_blank" rel="noopener">MITECO / EGIF</a></li>
+                <li><a href="https://effis.jrc.ec.europa.eu/" target="_blank" rel="noopener">EFFIS · Copernicus</a></li>
+                <li><a href="https://firms.modaps.eosdis.nasa.gov/" target="_blank" rel="noopener">NASA FIRMS</a></li>
+            </ul>
+        </div>
+        <div>
+            <strong>Ecosistema</strong>
+            <ul>
+                <li><a href="https://lluisridao.com" target="_blank" rel="noopener">lluisridao.com</a></li>
+                <li><a href="https://ridanet.com" target="_blank" rel="noopener">ridanet.com</a></li>
+                <li><a href="https://datosclaros.es">datosclaros.es</a></li>
+            </ul>
+        </div>
+        <div>
+            <strong>Redes</strong>
+            <ul>
+                <li><a href="https://instagram.com/lluisridao" target="_blank" rel="noopener">Instagram</a></li>
+                <li><a href="https://x.com/lluisridao" target="_blank" rel="noopener">X</a></li>
+                <li><a href="https://youtube.com/@lluisridao" target="_blank" rel="noopener">YouTube</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="wrap footer-bottom">
+        <span>© <span id="year"></span> datosclaros.es · Creado por <a href="https://lluisridao.com">Lluís Ridao</a></span>
+    </div>
+</footer>
+
+<a href="tel:112" class="fab-112" aria-label="Llamar al 112 (emergencia)" title="Llamar al 112 (emergencia)">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+    <span>112</span>
+</a>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="js/historico.js?v=1"></script>
+</body>
+</html>
