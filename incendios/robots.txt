@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Bloquear scripts internos de la carpeta
+Disallow: /incendios/fetch_firms.php
+Disallow: /incendios/fetch_news.php
+Disallow: /incendios/check.php
+Disallow: /incendios/diag.php
+Disallow: /incendios/config.php
+
+Sitemap: https://bigdata.datosclaros.es/incendios/sitemap.xml

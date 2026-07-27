@@ -113,6 +113,7 @@ function escapeHtml(s) {
 function filterIncendios() {
     const region = document.getElementById('regionFilter').value.toLowerCase();
     const days = parseInt(document.getElementById('daysFilter').value);
+    const conf = (document.getElementById('confidenceFilter') || { value: 'all' }).value;
 
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
@@ -121,14 +122,18 @@ function filterIncendios() {
         const props = feature.properties;
         const date = parseAcq(props);
         if (isNaN(date)) return false;
-
-        let match = date >= cutoffDate;
+        if (date < cutoffDate) return false;
 
         if (region && props.region) {
-            match = match && props.region.toLowerCase().includes(region);
+            if (!props.region.toLowerCase().includes(region)) return false;
+        } else if (region) {
+            return false;
         }
 
-        return match;
+        if (conf === 'high' && props.confidence !== 'high') return false;
+        if (conf === 'medium' && !(props.confidence === 'high' || props.confidence === 'medium')) return false;
+
+        return true;
     });
 }
 
@@ -356,6 +361,48 @@ function refreshAll() {
 
 document.getElementById('regionFilter').addEventListener('change', refreshAll);
 document.getElementById('daysFilter').addEventListener('change', refreshAll);
+const confFilter = document.getElementById('confidenceFilter');
+if (confFilter) confFilter.addEventListener('change', refreshAll);
+
+// Theme toggle (persistente en localStorage)
+function setupTheme() {
+    const btn = document.getElementById('themeToggle');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+        const cur = document.documentElement.getAttribute('data-theme') || 'light';
+        const next = cur === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        // Actualizar colores de tooltip de Chart.js (mantener oscuro sobre claro y viceversa)
+        if (evolutionChart) evolutionChart.update();
+        if (regionChart) regionChart.update();
+    });
+}
+
+// Share (Web Share API con fallback a copiar al portapapeles)
+function setupShare() {
+    const btn = document.getElementById('shareBtn');
+    if (!btn) return;
+    btn.addEventListener('click', async () => {
+        const url = location.href;
+        const title = document.title;
+        const text = 'Incendios forestales en España en tiempo real';
+        if (navigator.share) {
+            try { await navigator.share({ title, text, url }); } catch (e) { /* cancelado */ }
+        } else if (navigator.clipboard) {
+            await navigator.clipboard.writeText(url);
+            btn.innerHTML = '✓ Enlace copiado';
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            prompt('Copia este enlace:', url);
+        }
+    });
+}
+
+function setupYear() {
+    const el = document.getElementById('year');
+    if (el) el.textContent = new Date().getFullYear();
+}
 
 function showAlert(msg, type = 'info') {
     const alert = document.createElement('div');
@@ -371,6 +418,9 @@ function clearAlerts() {
 }
 
 window.addEventListener('load', () => {
+    setupTheme();
+    setupShare();
+    setupYear();
     initMap();
     loadIncendios();
     loadNoticias();

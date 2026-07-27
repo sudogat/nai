@@ -1,150 +1,375 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Incendios forestales España — datosclaros.es</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#dc2626">
+
+    <title>Incendios forestales España en tiempo real · datosclaros.es</title>
+    <meta name="description" content="Focos activos detectados por satélite (NASA FIRMS · VIIRS + MODIS) en España. Mapa interactivo, análisis por comunidad, noticias oficiales. Datos abiertos actualizados cada pocas horas.">
+    <meta name="keywords" content="incendios forestales, España, NASA FIRMS, VIIRS, MODIS, tiempo real, mapa incendios, focos activos, satélite, hectáreas quemadas, datos abiertos">
+    <meta name="author" content="Lluís Ridao">
+    <link rel="canonical" href="https://bigdata.datosclaros.es/incendios/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Incendios forestales España en tiempo real">
+    <meta property="og:description" content="Focos activos detectados por satélite en España. Mapa, análisis y noticias.">
+    <meta property="og:url" content="https://bigdata.datosclaros.es/incendios/">
+    <meta property="og:site_name" content="datosclaros.es">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:image" content="https://bigdata.datosclaros.es/incendios/og-image.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@lluisridao">
+    <meta name="twitter:creator" content="@lluisridao">
+    <meta name="twitter:title" content="Incendios forestales España en tiempo real">
+    <meta name="twitter:description" content="Focos activos detectados por satélite (NASA FIRMS) en España.">
+    <meta name="twitter:image" content="https://bigdata.datosclaros.es/incendios/og-image.png">
+
+    <!-- Favicon SVG -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23dc2626' d='M16 2c1 4-3 5-3 10 0 3 2 5 3 5s3-2 3-5c0-2-1-3-1-4 4 3 7 7 7 12 0 6-4 10-9 10s-9-4-9-10c0-6 5-11 9-18z'/%3E%3C/svg%3E">
+
+    <!-- Structured data: Dataset -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Dataset",
+      "name": "Focos activos NASA FIRMS filtrados a España",
+      "description": "Detecciones de anomalías térmicas satelitales (VIIRS Suomi NPP, VIIRS NOAA-20, MODIS) sobre el territorio español, últimos 7 días.",
+      "url": "https://bigdata.datosclaros.es/incendios/",
+      "creator": { "@type": "Person", "name": "Lluís Ridao", "url": "https://lluisridao.com" },
+      "publisher": { "@type": "Organization", "name": "datosclaros.es", "url": "https://datosclaros.es" },
+      "isBasedOn": "https://firms.modaps.eosdis.nasa.gov/",
+      "license": "https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy",
+      "keywords": ["incendios", "forestales", "España", "NASA FIRMS", "VIIRS", "MODIS", "satélite"],
+      "spatialCoverage": {
+        "@type": "Place",
+        "geo": { "@type": "GeoShape", "box": "27.0 -18.5 44.0 4.5" },
+        "name": "España"
+      },
+      "distribution": {
+        "@type": "DataDownload",
+        "encodingFormat": "application/json",
+        "contentUrl": "https://bigdata.datosclaros.es/incendios/data/incendios.json"
+      }
+    }
+    </script>
+
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-    <link rel="stylesheet" href="css/style.css?v=6">
+    <link rel="stylesheet" href="css/style.css?v=7">
+
+    <script>
+        // Anti-flicker: aplica el tema guardado antes de renderizar
+        (function () {
+            var t = localStorage.getItem('theme');
+            if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
 </head>
 <body>
 
 <header class="site-header">
     <div class="wrap">
-        <a href="/" class="brand">datosclaros<span>.es</span></a>
+        <a href="/" class="brand">
+            <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 2c1 4-3 5-3 10 0 3 2 5 3 5s3-2 3-5c0-2-1-3-1-4 4 3 7 7 7 12 0 6-4 10-9 10s-9-4-9-10c0-6 5-11 9-18z"/></svg>
+            <span>datosclaros<i>.es</i></span>
+        </a>
         <nav class="nav">
             <a href="https://datosclaros.es">Inicio</a>
             <a href="/incendios" aria-current="page">Incendios</a>
+            <a href="#sobre-datos">Metodología</a>
+            <button id="themeToggle" class="btn-icon" aria-label="Cambiar tema" title="Cambiar tema">
+                <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/></svg>
+                <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
         </nav>
     </div>
 </header>
 
-<main class="wrap">
+<main>
 
     <section class="hero">
-        <h1>Incendios forestales en España</h1>
-        <p class="lede">Focos activos detectados por satélite (NASA FIRMS · VIIRS y MODIS). Datos abiertos, agregados en tiempo casi real. Información indicativa: consulta INFOCA, JCyL, Bombers y otras autoridades oficiales para decisiones operativas.</p>
-        <p class="meta">Última actualización: <span id="timestamp-hero">—</span> · Fuente: NASA FIRMS</p>
-    </section>
-
-    <section class="filters" aria-label="Filtros">
-        <label class="field">
-            <span>Comunidad autónoma</span>
-            <select id="regionFilter">
-                <option value="">Todas</option>
-                <option value="andalucía">Andalucía</option>
-                <option value="aragón">Aragón</option>
-                <option value="asturias">Asturias</option>
-                <option value="baleares">Baleares</option>
-                <option value="canarias">Canarias</option>
-                <option value="cantabria">Cantabria</option>
-                <option value="castilla-la mancha">Castilla-La Mancha</option>
-                <option value="castilla-león">Castilla y León</option>
-                <option value="cataluña">Cataluña</option>
-                <option value="comunidad valenciana">Comunidad Valenciana</option>
-                <option value="extremadura">Extremadura</option>
-                <option value="galicia">Galicia</option>
-                <option value="la rioja">La Rioja</option>
-                <option value="madrid">Madrid</option>
-                <option value="murcia">Murcia</option>
-                <option value="navarra">Navarra</option>
-                <option value="país vasco">País Vasco</option>
-            </select>
-        </label>
-        <label class="field">
-            <span>Rango temporal</span>
-            <select id="daysFilter">
-                <option value="1">Últimas 24 h</option>
-                <option value="3" selected>Últimos 3 días</option>
-                <option value="7">Últimos 7 días</option>
-            </select>
-        </label>
-    </section>
-
-    <section class="stats" aria-label="Resumen">
-        <article class="stat">
-            <div class="stat-value" id="activeCount">0</div>
-            <div class="stat-label">Focos detectados</div>
-        </article>
-        <article class="stat">
-            <div class="stat-value" id="hectaresCount">0</div>
-            <div class="stat-label">Hectáreas (estimadas)</div>
-        </article>
-        <article class="stat">
-            <div class="stat-value"><span id="intensityAvg">0</span> <small>MW</small></div>
-            <div class="stat-label">Intensidad media</div>
-        </article>
-        <article class="stat">
-            <div class="stat-value" id="lastDay">0</div>
-            <div class="stat-label">En las últimas 24 h</div>
-        </article>
-    </section>
-
-    <section class="block">
-        <h2>Mapa</h2>
-        <div class="map-container">
-            <div id="map"></div>
+        <div class="wrap">
+            <span class="eyebrow">🔥 Tiempo casi real · Datos abiertos</span>
+            <h1>Incendios forestales<br><em>en España</em></h1>
+            <p class="lede">Focos activos detectados por satélite (NASA FIRMS · VIIRS y MODIS). Mapa interactivo, análisis por comunidad y últimas noticias oficiales.</p>
+            <p class="meta">Última actualización: <span id="timestamp-hero">—</span> · Fuente: NASA FIRMS</p>
+            <div class="hero-actions">
+                <button id="shareBtn" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    Compartir
+                </button>
+                <a href="#sobre-datos" class="btn btn-ghost">¿De dónde salen los datos?</a>
+            </div>
         </div>
-        <p class="legend">
-            <span class="dot dot-high"></span> Confianza alta
-            <span class="dot dot-med"></span> Media
-            <span class="dot dot-low"></span> Baja
-        </p>
     </section>
 
-    <section class="block">
-        <h2>Análisis</h2>
-        <div class="chart-grid">
-            <article class="chart-card">
-                <h3>Evolución (últimos 7 días)</h3>
-                <canvas id="evolutionChart" height="200"></canvas>
+    <div class="wrap">
+
+        <div class="disclaimer" role="note">
+            <div class="disclaimer-icon">ℹ️</div>
+            <div>
+                <strong>Estos números no son las hectáreas oficiales.</strong>
+                Aquí ves <em>detecciones de anomalías térmicas por satélite</em> — cada punto en el mapa es un píxel VIIRS/MODIS con calor detectado, no un incendio agregado. Las cifras oficiales del Gobierno (MITECO/EGIF), que hablan de más de 250 000 ha este año, se elaboran con partes de las comunidades autónomas y se publican con semanas de retraso. <a href="#sobre-datos">Explicación completa</a>.
+            </div>
+        </div>
+
+        <section class="filters" aria-label="Filtros">
+            <label class="field">
+                <span>Comunidad autónoma</span>
+                <select id="regionFilter">
+                    <option value="">Todas</option>
+                    <option value="andalucía">Andalucía</option>
+                    <option value="aragón">Aragón</option>
+                    <option value="asturias">Asturias</option>
+                    <option value="baleares">Baleares</option>
+                    <option value="canarias">Canarias</option>
+                    <option value="cantabria">Cantabria</option>
+                    <option value="castilla-la mancha">Castilla-La Mancha</option>
+                    <option value="castilla-león">Castilla y León</option>
+                    <option value="cataluña">Cataluña</option>
+                    <option value="comunidad valenciana">Comunidad Valenciana</option>
+                    <option value="extremadura">Extremadura</option>
+                    <option value="galicia">Galicia</option>
+                    <option value="la rioja">La Rioja</option>
+                    <option value="madrid">Madrid</option>
+                    <option value="murcia">Murcia</option>
+                    <option value="navarra">Navarra</option>
+                    <option value="país vasco">País Vasco</option>
+                </select>
+            </label>
+            <label class="field">
+                <span>Rango temporal</span>
+                <select id="daysFilter">
+                    <option value="1">Últimas 24 h</option>
+                    <option value="3" selected>Últimos 3 días</option>
+                    <option value="7">Últimos 7 días</option>
+                </select>
+            </label>
+            <label class="field">
+                <span>Confianza mínima</span>
+                <select id="confidenceFilter">
+                    <option value="all" selected>Todas</option>
+                    <option value="medium">Media o alta</option>
+                    <option value="high">Solo alta</option>
+                </select>
+            </label>
+        </section>
+
+        <section class="stats" aria-label="Resumen">
+            <article class="stat">
+                <div class="stat-value" id="activeCount">—</div>
+                <div class="stat-label">Detecciones</div>
             </article>
-            <article class="chart-card">
-                <h3>Distribución por comunidad</h3>
-                <canvas id="regionChart" height="200"></canvas>
+            <article class="stat">
+                <div class="stat-value" id="hectaresCount">—</div>
+                <div class="stat-label">Hectáreas (aprox.)</div>
             </article>
-        </div>
-    </section>
+            <article class="stat">
+                <div class="stat-value"><span id="intensityAvg">—</span> <small>MW</small></div>
+                <div class="stat-label">Intensidad media</div>
+            </article>
+            <article class="stat">
+                <div class="stat-value" id="lastDay">—</div>
+                <div class="stat-label">Últimas 24 h</div>
+            </article>
+        </section>
 
-    <section class="block">
-        <h2>Últimas noticias</h2>
-        <p class="meta">Fuentes oficiales y prensa agregadas por Google Noticias.</p>
-        <ul class="news" id="newsList">
-            <li class="news-empty">Cargando noticias…</li>
-        </ul>
-    </section>
+        <section class="block">
+            <div class="block-head">
+                <h2>Mapa interactivo</h2>
+                <p class="legend">
+                    <span class="dot dot-high"></span> Confianza alta
+                    <span class="dot dot-med"></span> Media
+                    <span class="dot dot-low"></span> Baja
+                </p>
+            </div>
+            <div class="map-container">
+                <div id="map"></div>
+            </div>
+        </section>
 
-    <section class="block">
-        <h2>Detecciones</h2>
-        <div class="table-wrap">
-            <table id="incendiosTable">
-                <thead>
-                    <tr>
-                        <th>Fecha y hora</th>
-                        <th>Comunidad</th>
-                        <th>Potencia (MW)</th>
-                        <th>Confianza</th>
-                        <th>Sensor</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-        </div>
-    </section>
+        <section class="block">
+            <h2>Análisis</h2>
+            <div class="chart-grid">
+                <article class="chart-card">
+                    <h3>Evolución últimos 7 días</h3>
+                    <canvas id="evolutionChart" height="220"></canvas>
+                </article>
+                <article class="chart-card">
+                    <h3>Distribución por comunidad</h3>
+                    <canvas id="regionChart" height="220"></canvas>
+                </article>
+            </div>
+        </section>
+
+        <section class="block" id="noticias">
+            <h2>Últimas noticias</h2>
+            <p class="meta">Agregado de fuentes oficiales y prensa española (Google Noticias).</p>
+            <ul class="news" id="newsList">
+                <li class="news-empty">Cargando noticias…</li>
+            </ul>
+        </section>
+
+        <section class="block">
+            <h2>Detecciones recientes</h2>
+            <div class="table-wrap">
+                <table id="incendiosTable">
+                    <thead>
+                        <tr>
+                            <th>Fecha y hora</th>
+                            <th>Comunidad</th>
+                            <th>Potencia (MW)</th>
+                            <th>Confianza</th>
+                            <th>Sensor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="block info" id="sobre-datos">
+            <h2>Sobre los datos y la metodología</h2>
+
+            <div class="info-grid">
+                <article class="info-card">
+                    <h3>Qué es cada punto del mapa</h3>
+                    <p>Cada punto es una <strong>detección de anomalía térmica</strong> registrada por un satélite polar orbitando la Tierra. VIIRS (Suomi NPP, NOAA-20) detecta píxeles de ~375 m; MODIS (Terra/Aqua) de ~1 km. Un incendio real genera decenas o cientos de detecciones a lo largo del día.</p>
+                </article>
+
+                <article class="info-card">
+                    <h3>Por qué difieren de las cifras oficiales</h3>
+                    <p>El Gobierno publica <strong>hectáreas quemadas</strong> a partir de los partes de las comunidades autónomas (INFOCA, JCyL, Bombers, etc.) recogidos por el <strong>EGIF</strong> del MITECO. Son datos consolidados y con validación de campo, pero se publican con semanas o meses de retraso. Aquí ves los focos activos en las últimas horas.</p>
+                </article>
+
+                <article class="info-card">
+                    <h3>Cómo calculamos las hectáreas "aproximadas"</h3>
+                    <p>Es una <strong>estimación muy grosera</strong> basada en la potencia radiativa (FRP) sumada de todas las detecciones filtradas. No es una superficie quemada real. Sirve para comparar orden de magnitud, no para citar una cifra oficial.</p>
+                </article>
+
+                <article class="info-card">
+                    <h3>Latencia y actualización</h3>
+                    <p>Los CSV públicos de NASA FIRMS se actualizan varias veces al día. Nuestro servidor los descarga cada 6 h y actualiza el JSON que consume la web. La latencia típica desde el paso del satélite hasta el mapa es de <strong>3-6 horas</strong>.</p>
+                </article>
+
+                <article class="info-card">
+                    <h3>Fuentes primarias</h3>
+                    <ul>
+                        <li><a href="https://firms.modaps.eosdis.nasa.gov/" target="_blank" rel="noopener">NASA FIRMS</a> — Fire Information for Resource Management System</li>
+                        <li><a href="https://effis.jrc.ec.europa.eu/" target="_blank" rel="noopener">EFFIS</a> — Sistema europeo de información sobre incendios (Copernicus)</li>
+                        <li><a href="https://www.miteco.gob.es/es/biodiversidad/temas/incendios-forestales/estadisticas.html" target="_blank" rel="noopener">MITECO / EGIF</a> — Estadística oficial española</li>
+                    </ul>
+                </article>
+
+                <article class="info-card">
+                    <h3>Uso responsable</h3>
+                    <p>Esta web es <strong>informativa</strong>, no operativa. Para decisiones de emergencia consulta siempre las autoridades: <a href="https://www.juntadeandalucia.es/medioambiente/portal/areas-tematicas/incendios-forestales" target="_blank" rel="noopener">INFOCA</a> (Andalucía), <a href="https://patrimonionatural.org/servicio-de-prevencion-y-extincion-de-incendios" target="_blank" rel="noopener">JCyL</a>, <a href="https://interior.gencat.cat/ca/arees_dactuacio/bombers" target="_blank" rel="noopener">Bombers de la Generalitat</a>, <a href="https://www.proteccioncivil.es/" target="_blank" rel="noopener">Protección Civil</a>, o el <strong>112</strong>.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="block ecosystem" id="ecosistema">
+            <h2>Sígueme y descubre el ecosistema</h2>
+            <p class="meta">Marca personal y proyectos de Lluís Ridao.</p>
+
+            <div class="ecosystem-grid">
+                <a class="eco-card eco-personal" href="https://lluisridao.com" target="_blank" rel="noopener">
+                    <div class="eco-icon">👤</div>
+                    <div>
+                        <strong>lluisridao.com</strong>
+                        <span>Marca personal</span>
+                    </div>
+                </a>
+                <a class="eco-card eco-brand" href="https://ridanet.com" target="_blank" rel="noopener">
+                    <div class="eco-icon">🌐</div>
+                    <div>
+                        <strong>ridanet.com</strong>
+                        <span>Ecosistema web</span>
+                    </div>
+                </a>
+                <a class="eco-card eco-brand" href="https://datosclaros.es" target="_blank" rel="noopener">
+                    <div class="eco-icon">📊</div>
+                    <div>
+                        <strong>datosclaros.es</strong>
+                        <span>Datos abiertos</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="socials">
+                <a class="social" href="https://instagram.com/lluisridao" target="_blank" rel="noopener" aria-label="Instagram">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.16c3.2 0 3.58 0 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s0 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.64.07-4.85.07s-3.58 0-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.64-.07-4.85s0-3.58.07-4.85C2.38 3.92 3.9 2.38 7.15 2.23 8.42 2.18 8.8 2.16 12 2.16zm0 3.68a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></svg>
+                    <span>Instagram</span>
+                </a>
+                <a class="social" href="https://x.com/lluisridao" target="_blank" rel="noopener" aria-label="X (antes Twitter)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.24 2H21.5l-7.13 8.15L23 22h-6.85l-5.37-7.02L4.6 22H1.34l7.63-8.72L1 2h7.02l4.85 6.4L18.24 2zm-2.4 18h1.94L7.24 4H5.16l10.68 16z"/></svg>
+                    <span>X</span>
+                </a>
+                <a class="social" href="https://youtube.com/@lluisridao" target="_blank" rel="noopener" aria-label="YouTube">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
+                    <span>YouTube</span>
+                </a>
+                <a class="social" href="https://facebook.com/lluisridao" target="_blank" rel="noopener" aria-label="Facebook">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.53V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/></svg>
+                    <span>Facebook</span>
+                </a>
+            </div>
+        </section>
+
+    </div>
 
 </main>
 
 <footer class="site-footer">
-    <div class="wrap">
-        <p><strong>datosclaros.es</strong> — datos públicos accesibles.</p>
-        <p class="disclaimer">NASA FIRMS (VIIRS Suomi NPP + NOAA-20, MODIS). Información indicativa. Para operaciones, consulta INFOCA, JCyL, Bombers y demás autoridades oficiales.</p>
-        <p class="creds">Creado por <a href="https://lluisridao.com">Lluís Ridao</a> · <a href="https://instagram.com/lluisridao">Instagram</a> · <a href="https://x.com/lluisridao">X</a> · <a href="https://youtube.com/@lluisridao">YouTube</a></p>
+    <div class="wrap footer-grid">
+        <div>
+            <div class="brand" style="margin-bottom:12px;">
+                <svg width="20" height="20" viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 2c1 4-3 5-3 10 0 3 2 5 3 5s3-2 3-5c0-2-1-3-1-4 4 3 7 7 7 12 0 6-4 10-9 10s-9-4-9-10c0-6 5-11 9-18z"/></svg>
+                <span>datosclaros<i>.es</i></span>
+            </div>
+            <p class="disclaimer-text">Datos públicos accesibles. Información indicativa, no operativa. Para emergencias, marca 112.</p>
+        </div>
+        <div>
+            <strong>Datos</strong>
+            <ul>
+                <li><a href="https://firms.modaps.eosdis.nasa.gov/" target="_blank" rel="noopener">NASA FIRMS</a></li>
+                <li><a href="https://effis.jrc.ec.europa.eu/" target="_blank" rel="noopener">EFFIS · Copernicus</a></li>
+                <li><a href="https://www.miteco.gob.es/es/biodiversidad/temas/incendios-forestales/estadisticas.html" target="_blank" rel="noopener">MITECO / EGIF</a></li>
+            </ul>
+        </div>
+        <div>
+            <strong>Ecosistema</strong>
+            <ul>
+                <li><a href="https://lluisridao.com" target="_blank" rel="noopener">lluisridao.com</a></li>
+                <li><a href="https://ridanet.com" target="_blank" rel="noopener">ridanet.com</a></li>
+                <li><a href="https://datosclaros.es">datosclaros.es</a></li>
+            </ul>
+        </div>
+        <div>
+            <strong>Redes</strong>
+            <ul>
+                <li><a href="https://instagram.com/lluisridao" target="_blank" rel="noopener">Instagram</a></li>
+                <li><a href="https://x.com/lluisridao" target="_blank" rel="noopener">X</a></li>
+                <li><a href="https://youtube.com/@lluisridao" target="_blank" rel="noopener">YouTube</a></li>
+                <li><a href="https://facebook.com/lluisridao" target="_blank" rel="noopener">Facebook</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="wrap footer-bottom">
+        <span>© <span id="year"></span> datosclaros.es · Creado por <a href="https://lluisridao.com">Lluís Ridao</a></span>
     </div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-<script src="js/app.js?v=6"></script>
+<script src="js/app.js?v=7"></script>
 </body>
 </html>
