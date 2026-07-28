@@ -6,6 +6,13 @@ let evolutionChart, regionChart;
 
 const DATA_URL = '/incendios/data/incendios.json';
 const NEWS_URL = '/incendios/data/noticias.json';
+const UPDATE_URL = '/incendios/update-data.php';
+
+// Control de actualizaciones automáticas (sin crons, vía AJAX)
+let lastDataUpdate = 0;
+let lastNewsUpdate = 0;
+const FIRMS_UPDATE_INTERVAL = 5 * 60 * 1000;  // 5 minutos
+const NEWS_UPDATE_INTERVAL = 10 * 60 * 1000;  // 10 minutos
 
 // Paleta tema claro
 const COLORS = {
@@ -539,6 +546,57 @@ function setupYear() {
     if (el) el.textContent = new Date().getFullYear();
 }
 
+// Actualizar datos vía update-data.php (sin crons)
+async function updateDataViaAjax(firms = false, news = false) {
+    if (!firms && !news) return;
+
+    try {
+        const params = new URLSearchParams();
+        if (firms) params.append('firms', '1');
+        if (news) params.append('news', '1');
+
+        const response = await fetch(UPDATE_URL + '?' + params.toString(), {
+            cache: 'no-store',
+            timeout: 30000
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Auto-update via AJAX:', result);
+
+            // Recargar datos después de actualizar
+            if (firms) {
+                setTimeout(loadIncendios, 1000);
+            }
+            if (news) {
+                setTimeout(loadNoticias, 1000);
+            }
+        }
+    } catch (error) {
+        console.warn('Auto-update AJAX failed:', error);
+        // Sin crons, si falla el AJAX, intentar nuevamente en 5 min
+    }
+}
+
+// Planificador de actualizaciones automáticas
+function scheduleAutoUpdates() {
+    setInterval(() => {
+        const now = Date.now();
+
+        // Actualizar FIRMS cada 5 minutos
+        if (now - lastDataUpdate >= FIRMS_UPDATE_INTERVAL) {
+            lastDataUpdate = now;
+            updateDataViaAjax(true, false);
+        }
+
+        // Actualizar noticias cada 10 minutos
+        if (now - lastNewsUpdate >= NEWS_UPDATE_INTERVAL) {
+            lastNewsUpdate = now;
+            updateDataViaAjax(false, true);
+        }
+    }, 60000); // Verificar cada minuto
+}
+
 function setupRefresh() {
     const btn = document.getElementById('refreshBtn');
     if (!btn) return;
@@ -550,7 +608,13 @@ function setupRefresh() {
         btn.textContent = 'Cargando…';
 
         try {
+            // Forzar actualización vía AJAX + recargar datos
+            await updateDataViaAjax(true, true);
             await Promise.all([loadIncendios(), loadNoticias()]);
+
+            lastDataUpdate = Date.now();
+            lastNewsUpdate = Date.now();
+
             btn.textContent = '✓ Actualizado';
             setTimeout(() => {
                 btn.textContent = originalText;
