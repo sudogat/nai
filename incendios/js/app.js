@@ -599,8 +599,13 @@ function scheduleAutoUpdates() {
 
 function setupRefresh() {
     const btn = document.getElementById('refreshBtn');
-    if (!btn) return;
+    if (!btn) {
+        console.error('refreshBtn not found!');
+        return;
+    }
+    console.log('setupRefresh: button found, adding listener');
     btn.addEventListener('click', async () => {
+        console.log('refreshBtn clicked!');
         const originalText = btn.textContent;
         const originalOpacity = btn.style.opacity;
         btn.disabled = true;
@@ -608,6 +613,7 @@ function setupRefresh() {
         btn.textContent = 'Cargando…';
 
         try {
+            console.log('Calling updateDataViaAjax...');
             // Forzar actualización vía AJAX + recargar datos
             await updateDataViaAjax(true, true);
             await Promise.all([loadIncendios(), loadNoticias()]);
