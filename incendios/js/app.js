@@ -52,6 +52,12 @@ function initMap() {
 }
 
 async function loadIncendios() {
+    const timestamp = document.getElementById('timestamp-hero');
+    if (timestamp) {
+        timestamp.style.opacity = '0.6';
+        timestamp.style.transition = 'opacity 0.3s';
+    }
+
     try {
         const response = await fetch(DATA_URL + '?t=' + Date.now(), { cache: 'no-store' });
         if (!response.ok) throw new Error('HTTP ' + response.status);
@@ -62,6 +68,12 @@ async function loadIncendios() {
         clearAlerts();
         updateTimestamp(data.timestamp);
 
+        if (timestamp) {
+            setTimeout(() => {
+                timestamp.style.opacity = '1';
+            }, 200);
+        }
+
         if (allIncendios.length === 0 && Array.isArray(data.errors) && data.errors.length > 0) {
             showAlert('Sin datos NASA FIRMS ahora mismo (' + data.errors.join(', ') + '). Reintentando…', 'warning');
         }
@@ -70,6 +82,7 @@ async function loadIncendios() {
 
     } catch (error) {
         console.error('Error loading fires:', error);
+        if (timestamp) timestamp.style.opacity = '1';
         showAlert('No se pudo cargar ' + DATA_URL + ' — ' + error.message + '. Reintentando en 30s…', 'error');
         setTimeout(loadIncendios, 30000);
     }
@@ -344,13 +357,42 @@ function chartOptions() {
     };
 }
 
+let lastUpdateTime = null;
+
 function updateTimestamp(timestamp) {
     if (timestamp) {
+        lastUpdateTime = new Date(timestamp);
         const date = new Date(timestamp);
         document.getElementById('timestamp-hero').textContent = date.toLocaleString('es-ES', {
             day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
         });
     }
+}
+
+// Actualiza cada segundo el "hace X minutos"
+function updateTimeAgo() {
+    if (!lastUpdateTime) return;
+    const now = new Date();
+    const diff = Math.floor((now - lastUpdateTime) / 1000);
+    const heroEl = document.getElementById('timestamp-hero');
+    if (!heroEl) return;
+
+    let text;
+    if (diff < 60) {
+        text = 'Ahora mismo';
+    } else if (diff < 3600) {
+        const m = Math.floor(diff / 60);
+        text = `Hace ${m} min`;
+    } else {
+        const h = Math.floor(diff / 3600);
+        text = `Hace ${h} h`;
+    }
+
+    // Mostrar la hora exacta en el title para más info
+    heroEl.title = lastUpdateTime.toLocaleString('es-ES');
+
+    // Si queremos mostrar el contador, descomentar:
+    // heroEl.textContent = text + ' · ' + lastUpdateTime.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 }
 
 function refreshAll() {
@@ -497,6 +539,35 @@ function setupYear() {
     if (el) el.textContent = new Date().getFullYear();
 }
 
+function setupRefresh() {
+    const btn = document.getElementById('refreshBtn');
+    if (!btn) return;
+    btn.addEventListener('click', async () => {
+        const originalText = btn.textContent;
+        const originalOpacity = btn.style.opacity;
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        btn.textContent = 'Cargando…';
+
+        try {
+            await Promise.all([loadIncendios(), loadNoticias()]);
+            btn.textContent = '✓ Actualizado';
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.opacity = originalOpacity;
+                btn.disabled = false;
+            }, 1500);
+        } catch (e) {
+            btn.textContent = '✗ Error';
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.opacity = originalOpacity;
+                btn.disabled = false;
+            }, 2000);
+        }
+    });
+}
+
 function showAlert(msg, type = 'info') {
     const alert = document.createElement('div');
     alert.className = `alert ${type}`;
@@ -513,10 +584,17 @@ function clearAlerts() {
 window.addEventListener('load', () => {
     setupShare();
     setupExport();
+    setupRefresh();
     setupYear();
     initMap();
     loadIncendios();
     loadNoticias();
-    setInterval(loadIncendios, 30 * 60 * 1000);
-    setInterval(loadNoticias, 30 * 60 * 1000);
+
+    // Actualizar datos cada 5 minutos
+    setInterval(loadIncendios, 5 * 60 * 1000);
+    setInterval(loadNoticias, 10 * 60 * 1000);
+
+    // Actualizar contador "hace X minutos" cada segundo
+    setInterval(updateTimeAgo, 1000);
+    updateTimeAgo(); // Llamar una vez al inicio
 });
