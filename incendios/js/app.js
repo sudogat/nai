@@ -597,45 +597,55 @@ function scheduleAutoUpdates() {
     }, 60000); // Verificar cada minuto
 }
 
+// Función global para el botón Actualizar (llamada directamente desde onclick)
+async function manualRefresh() {
+    console.log('manualRefresh() llamado');
+    const btn = document.getElementById('refreshBtn');
+    if (!btn) {
+        console.error('refreshBtn not found');
+        return;
+    }
+
+    const originalText = btn.textContent;
+    const originalOpacity = btn.style.opacity;
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    btn.textContent = 'Cargando…';
+
+    try {
+        console.log('Calling updateDataViaAjax...');
+        await updateDataViaAjax(true, true);
+        await Promise.all([loadIncendios(), loadNoticias()]);
+
+        lastDataUpdate = Date.now();
+        lastNewsUpdate = Date.now();
+
+        btn.textContent = '✓ Actualizado';
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.opacity = originalOpacity;
+            btn.disabled = false;
+        }, 1500);
+    } catch (e) {
+        console.error('manualRefresh error:', e);
+        btn.textContent = '✗ Error';
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.opacity = originalOpacity;
+            btn.disabled = false;
+        }, 2000);
+    }
+}
+
 function setupRefresh() {
     const btn = document.getElementById('refreshBtn');
     if (!btn) {
         console.error('refreshBtn not found!');
         return;
     }
-    console.log('setupRefresh: button found, adding listener');
-    btn.addEventListener('click', async () => {
-        console.log('refreshBtn clicked!');
-        const originalText = btn.textContent;
-        const originalOpacity = btn.style.opacity;
-        btn.disabled = true;
-        btn.style.opacity = '0.6';
-        btn.textContent = 'Cargando…';
-
-        try {
-            console.log('Calling updateDataViaAjax...');
-            // Forzar actualización vía AJAX + recargar datos
-            await updateDataViaAjax(true, true);
-            await Promise.all([loadIncendios(), loadNoticias()]);
-
-            lastDataUpdate = Date.now();
-            lastNewsUpdate = Date.now();
-
-            btn.textContent = '✓ Actualizado';
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.style.opacity = originalOpacity;
-                btn.disabled = false;
-            }, 1500);
-        } catch (e) {
-            btn.textContent = '✗ Error';
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.style.opacity = originalOpacity;
-                btn.disabled = false;
-            }, 2000);
-        }
-    });
+    console.log('setupRefresh: button found');
+    // Backup: agregar listener también
+    btn.addEventListener('click', manualRefresh);
 }
 
 function showAlert(msg, type = 'info') {
